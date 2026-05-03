@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechShop Georgia</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #0d47a1;
+  --orange: #ff6f00;
+  --green: #2e7d32;
+  --bg: #f0f4f8;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Noto Sans Georgian','Segoe UI',sans-serif; background:var(--bg); }
+
+/* HEADER */
+.header {
+  background:var(--blue); height:56px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 18px; position:sticky; top:0; z-index:100;
+  box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+.logo { display:flex; align-items:center; gap:9px; }
+.logo-icon { width:34px; height:34px; background:#fff; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:17px; }
+.logo-text { color:#fff; font-size:18px; font-weight:800; }
+.logo-text span { color:#ffcc02; }
+.btn-reg-header {
+  background:var(--orange); color:#fff; border:none;
+  border-radius:8px; padding:8px 16px;
+  font-size:13px; font-weight:700; cursor:pointer;
+  font-family:inherit;
+}
+
+/* TICKER */
+.ticker { background:var(--orange); color:#fff; font-size:12px; font-weight:600; padding:6px 0; overflow:hidden; white-space:nowrap; }
+.ticker span { display:inline-block; animation:scroll 20s linear infinite; }
+@keyframes scroll { from{transform:translateX(100vw)} to{transform:translateX(-100%)} }
+
+/* HERO */
+.hero {
+  background:linear-gradient(135deg,#0d47a1,#1565c0,#01579b);
+  padding:36px 20px 32px; text-align:center; color:#fff;
+}
+.hero h1 { font-size:22px; font-weight:800; line-height:1.35; margin-bottom:8px; }
+.hero p  { font-size:14px; color:rgba(255,255,255,.85); margin-bottom:22px; }
+.btn-hero {
+  background:linear-gradient(90deg,#ff6f00,#ff8f00);
+  color:#fff; border:none; border-radius:12px;
+  padding:15px 36px; font-size:16px; font-weight:800;
+  cursor:pointer; font-family:inherit;
+  box-shadow:0 4px 18px rgba(255,111,0,.4);
+}
+
+/* PRODUCTS */
+.section { max-width:680px; margin:20px auto; padding:0 14px; }
+.sec-title { font-size:15px; font-weight:800; color:#1a1a1a; margin-bottom:12px; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+.card {
+  background:#fff; border-radius:13px;
+  box-shadow:0 2px 10px rgba(0,0,0,.07); overflow:hidden;
+  cursor:pointer;
+}
+.card.featured { grid-column:1/-1; display:flex; align-items:center; border:2px solid var(--orange); }
+.card-img {
+  height:120px; background:linear-gradient(135deg,#e3f2fd,#bbdefb);
+  display:flex; align-items:center; justify-content:center; font-size:48px;
+}
+.card.featured .card-img { width:110px; height:96px; flex-shrink:0; }
+.card-body { padding:11px 13px; }
+.card.featured .card-body { padding:14px 16px; }
+.card-name { font-size:13px; font-weight:700; color:#1a1a1a; margin-bottom:6px; line-height:1.4; }
+.deal-badge {
+  display:inline-flex; align-items:center; gap:5px;
+  background:#fff3e0; border:1px solid #ffcc02;
+  color:var(--orange); font-size:11px; font-weight:700;
+  border-radius:6px; padding:3px 8px; margin-bottom:6px;
+}
+.price-row { display:flex; align-items:center; gap:8px; }
+.p-old { font-size:12px; color:#aaa; text-decoration:line-through; }
+.p-new { font-size:17px; font-weight:800; color:var(--green); }
+
+/* regular cards — no price shown, just name */
+.card-price-hidden { font-size:12px; color:#888; margin-top:4px; }
+
+/* REFERRAL STRIP */
+.strip {
+  background:linear-gradient(90deg,#2e7d32,#388e3c);
+  border-radius:13px; padding:16px 18px;
+  display:flex; align-items:center; gap:12px;
+  cursor:pointer; box-shadow:0 4px 14px rgba(46,125,50,.25);
+  margin-bottom:20px;
+}
+.strip-text h4 { color:#fff; font-size:14px; font-weight:700; margin-bottom:2px; }
+.strip-text p  { color:rgba(255,255,255,.85); font-size:12px; }
+.strip-arrow   { color:#fff; font-size:20px; margin-left:auto; }
+
+/* FOOTER */
+footer { background:#1a1a2e; color:#888; font-size:11px; text-align:center; padding:14px; margin-top:24px; }
+
+/* ══ OVERLAYS ══ */
+.overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.6); z-index:9000;
+  align-items:center; justify-content:center; padding:16px;
+}
+.overlay.show { display:flex; }
+
+/* Registration modal */
+.modal-reg {
+  background:#fff; border-radius:16px;
+  padding:30px 24px; max-width:380px; width:100%; text-align:center;
+  animation: popIn .25s ease;
+}
+@keyframes popIn { from{transform:scale(.92);opacity:0} to{transform:scale(1);opacity:1} }
+.modal-reg .close-btn {
+  position:absolute; top:12px; right:16px;
+  background:none; border:none; font-size:20px; cursor:pointer; color:#aaa;
+}
+.modal-reg { position:relative; }
+.modal-reg .m-icon { font-size:38px; margin-bottom:8px; }
+.modal-reg h2 { font-size:19px; font-weight:800; margin-bottom:6px; }
+.modal-reg .sub { font-size:13px; color:#666; line-height:1.5; margin-bottom:20px; }
+.perks { background:#f5f7fa; border-radius:10px; padding:12px 14px; text-align:left; margin-bottom:20px; }
+.perk { font-size:12px; color:#333; margin-bottom:5px; display:flex; gap:7px; }
+.perk:last-child { margin:0; }
+.btn-social {
+  width:100%; padding:13px 16px; border:none; border-radius:11px;
+  font-size:14px; font-weight:700; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:9px;
+  font-family:inherit; margin-bottom:9px;
+}
+.btn-fb { background:#1877f2; color:#fff; }
+.btn-ig { background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color:#fff; }
+.btn-skip { background:#f0f0f0; color:#777; font-size:13px; padding:11px; }
+
+/* FB OAuth */
+.modal-fb { background:#fff; border-radius:14px; max-width:360px; width:100%; overflow:hidden; }
+.fb-head { background:#1877f2; padding:14px 18px; display:flex; align-items:center; gap:10px; }
+.fb-head .fbl { color:#fff; font-size:20px; font-weight:900; }
+.fb-head p { color:rgba(255,255,255,.9); font-size:13px; }
+.fb-body { padding:22px 18px; }
+.oauth-app { font-size:15px; font-weight:700; text-align:center; margin-bottom:4px; }
+.oauth-sub { font-size:12px; color:#666; text-align:center; margin-bottom:14px; line-height:1.5; }
+.perms-box { background:#f0f2f5; border-radius:9px; padding:12px 14px; margin-bottom:16px; }
+.perm { display:flex; align-items:center; gap:9px; font-size:13px; color:#333; margin-bottom:7px; }
+.perm:last-child { margin:0; }
+.oauth-btns { display:flex; gap:9px; }
+.ob-cancel { flex:1; padding:11px; background:#e4e6eb; color:#333; border:none; border-radius:7px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit; }
+.ob-go     { flex:1; padding:11px; background:#1877f2; color:#fff; border:none; border-radius:7px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+
+/* IG OAuth */
+.modal-ig { background:#fff; border-radius:14px; max-width:340px; width:100%; overflow:hidden; }
+.ig-head { background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); padding:14px 18px; text-align:center; }
+.ig-head .igl { font-family:'Grand Hotel',cursive; font-size:26px; color:#fff; }
+.ig-body { padding:22px 18px; text-align:center; }
+.ig-body .app-icon { font-size:36px; margin-bottom:8px; }
+.ig-perms-box { background:#fafafa; border:1px solid #dbdbdb; border-radius:9px; padding:12px 14px; margin-bottom:16px; text-align:left; }
+.ig-btns { display:flex; gap:9px; }
+.ib-cancel { flex:1; padding:11px; background:#fafafa; color:#333; border:1px solid #ddd; border-radius:7px; font-size:14px; cursor:pointer; font-family:inherit; }
+.ib-go     { flex:1; padding:11px; background:linear-gradient(45deg,#dc2743,#cc2366); color:#fff; border:none; border-radius:7px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+
+/* warning small */
+.warn-bar { background:#c0392b; color:#fff; text-align:center; padding:8px 14px; font-size:11px; font-weight:700; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="warn-bar">⚠️ სასწავლო/სადემონსტრაციო ფიშინგის სიმულაცია — საბაკალავრო კვლევა</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">🛒</div>
+    <div class="logo-text">Tech<span>Shop</span></div>
+  </div>
+  <button class="btn-reg-header" onclick="openReg()">დარეგისტრირდი</button>
+</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <span>🎁 გაუზიარე მეგობარს — ორივე მიიღებთ iPhone დამტენს 5 ₾-ად · 📦 უფასო მიტანა თბილისში · 🔥 iPhone 17 Pro – 3299 ₾ &nbsp;&nbsp;&nbsp; 🎁 გაუზიარე მეგობარს — ორივე მიიღებთ iPhone დამტენს 5 ₾-ად · 📦 უფასო მიტანა თბილისში</span>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>დარეგისტრირდი და მიიღე </br> 90%-იანი ფასდაკლება</h1>
+  <button class="btn-hero" onclick="openReg()">🎁 დარეგისტრირდი</button>
+</div>
+
+<!-- PRODUCTS -->
+<div class="section">
+
+  <div class="strip" onclick="window.location.href='techshop-referral-demo2.html'">
+    <span style="font-size:30px">🎁</span>
+    <div class="strip-text">
+      <h4>გაუზიარე მეგობარს — ორივე გამარჯვებული!</h4>
+      <p>MagSafe დამტენი 5 ₾ · მიტანა უფასო</p>
+    </div>
+    <div class="strip-arrow">›</div>
+  </div>
+
+  <div class="sec-title">პოპულარული პროდუქტები</div>
+  <div class="grid">
+
+    <!-- FEATURED -->
+    <div class="card featured" onclick="window.location.href='techshop-referral-demo2.html'">
+      <div class="card-img">🔌</div>
+      <div class="card-body">
+        <div class="deal-badge">🎁 სპეციალური შეთავაზება</div>
+        <div class="card-name">MagSafe iPhone დამტენი 15W</div>
+        <div class="price-row">
+          <span class="p-old">49 ₾</span>
+          <span class="p-new">5 ₾</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" onclick="openReg()">
+      <div class="card-img">📱</div>
+      <div class="card-body">
+        <div class="card-name">iPhone 17 Pro 256GB</div>
+        <div class="card-price-hidden">ფასის სანახავად დარეგისტრირდი →</div>
+      </div>
+    </div>
+
+    <div class="card" onclick="openReg()">
+      <div class="card-img">🎧</div>
+      <div class="card-body">
+        <div class="card-name">AirPods Pro 2nd Gen</div>
+        <div class="card-price-hidden">ფასის სანახავად დარეგისტრირდი →</div>
+      </div>
+    </div>
+
+    <div class="card" onclick="openReg()">
+      <div class="card-img">⌚</div>
+      <div class="card-body">
+        <div class="card-name">Apple Watch Series 10</div>
+        <div class="card-price-hidden">ფასის სანახავად დარეგისტრირდი →</div>
+      </div>
+    </div>
+
+    <div class="card" onclick="openReg()">
+      <div class="card-img">💻</div>
+      <div class="card-body">
+        <div class="card-name">MacBook Air M3</div>
+        <div class="card-price-hidden">ფასის სანახავად დარეგისტრირდი →</div>
+      </div>
+    </div>
+
+    <div class="card" onclick="openReg()">
+      <div class="card-img">📟</div>
+      <div class="card-body">
+        <div class="card-name">iPad 10th Gen</div>
+        <div class="card-price-hidden">ფასის სანახავად დარეგისტრირდი →</div>
+      </div>
+    </div>
+
+    <div class="card" onclick="openReg()">
+      <div class="card-img">🖥️</div>
+      <div class="card-body">
+        <div class="card-name">Samsung Galaxy S25</div>
+        <div class="card-price-hidden">ფასის სანახავად დარეგისტრირდი →</div>
+      </div>
+    </div>
+
+    <div class="card" onclick="openReg()">
+      <div class="card-img">🎮</div>
+      <div class="card-body">
+        <div class="card-name">PlayStation 5 Slim</div>
+        <div class="card-price-hidden">ფასის სანახავად დარეგისტრირდი →</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>© 2024 TechShop Georgia · techshop-georgia.click</footer>
+
+
+<!-- ══ MODAL: რეგისტრაცია ══ -->
+<div class="overlay" id="ov-reg">
+  <div class="modal-reg">
+    <button class="close-btn" onclick="closeAll()">✕</button>
+    <div class="m-icon">🛒</div>
+    <h2>დარეგისტრირდი</h2>
+    <p class="sub">მიიღე ექსკლუზიური ფასები და შეთავაზებები</p>
+    <div class="perks">
+      <div class="perk"><span>🎁</span><span>MagSafe დამტენი 5 ₾-ად</span></div>
+      <div class="perk"><span>🔓</span><span>ყველა ფასის ნახვა</span></div>
+      <div class="perk"><span>📦</span><span>უფასო მიტანა თბილისში</span></div>
+      <div class="perk"><span>💰</span><span>პირველ შეკვეთაზე 10% ფასდაკლება</span></div>
+    </div>
+    <button class="btn-social btn-fb" onclick="openFB()">
+      <span style="font-size:19px;font-weight:900">f</span> Facebook-ით
+    </button>
+    <button class="btn-social btn-ig" onclick="openIG()">
+      <span>📷</span> Instagram-ით
+    </button>
+    <button class="btn-social btn-skip" onclick="closeAll()">გაგრძელება რეგისტრაციის გარეშე</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: Facebook OAuth ══ -->
+<div class="overlay" id="ov-fb">
+  <div class="modal-fb">
+    <div class="fb-head">
+      <div class="fbl">facebook</div>
+      <p>ავტორიზაცია</p>
+    </div>
+    <div class="fb-body">
+      <div class="oauth-app">TechShop Georgia</div>
+      <div class="oauth-sub">ითხოვს შემდეგ წვდომებს შენს ანგარიშზე:</div>
+      <div class="perms-box">
+        <div class="perm">👤 მომხმარებლის სახელი</div>
+        <div class="perm">📧 ელ. ფოსტა</div>
+      </div>
+      <div class="oauth-btns">
+        <button class="ob-cancel" onclick="closeAll()">გაუქმება</button>
+        <button class="ob-go" onclick="donewithFB()">გაგრძელება</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Instagram OAuth ══ -->
+<div class="overlay" id="ov-ig">
+  <div class="modal-ig">
+    <div class="ig-head"><div class="igl">Instagram</div></div>
+    <div class="ig-body">
+      <div class="app-icon">🛒</div>
+      <div class="oauth-app">TechShop Georgia</div>
+      <div class="oauth-sub">ითხოვს წვდომას შენს Instagram ანგარიშზე</div>
+      <div class="ig-perms-box">
+        <div class="perm">👤 მომხმარებლის სახელი</div>
+        <div class="perm">📧 ელ. ფოსტა</div>
+      </div>
+      <div class="ig-btns">
+        <button class="ib-cancel" onclick="closeAll()">გაუქმება</button>
+        <button class="ib-go" onclick="donewithIG()">ავტორიზაცია</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openReg(){ closeAll(); document.getElementById('ov-reg').classList.add('show'); }
+function openFB() { closeAll(); document.getElementById('ov-fb').classList.add('show'); }
+function openIG() { closeAll(); document.getElementById('ov-ig').classList.add('show'); }
+function closeAll(){ document.querySelectorAll('.overlay').forEach(e=>e.classList.remove('show')); }
+function donewithFB()   { closeAll(); window.location.href='facebook-phishing-demo.html'; }
+function donewithIG()   { closeAll(); window.location.href='instagram-phishing-demo.html'; }
+
+// backdrop close
+document.querySelectorAll('.overlay').forEach(el=>{
+  el.addEventListener('click',e=>{ if(e.target===el) closeAll(); });
+});
+
+// auto-popup after 2 seconds
+setTimeout(openReg, 2000);
+</script>
+</body>
+</html>
