@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechShop Georgia – მეგობართან გაზიარება</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ts-blue: #0d47a1;
+  --ts-orange: #ff6f00;
+  --ts-green: #2e7d32;
+  --ts-bg: #f0f4f8;
+  --warning: #c0392b;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Noto Sans Georgian', 'Segoe UI', sans-serif;
+  background: var(--ts-bg);
+  min-height: 100vh;
+}
+
+/* ─── WARNING ─── */
+.warning-banner {
+  background: var(--warning); color: #fff;
+  text-align: center; padding: 10px 16px;
+  font-size: 12px; font-weight: 700;
+  position: sticky; top: 0; z-index: 9999; line-height: 1.5;
+}
+.indicators {
+  max-width: 700px; margin: 14px auto 0;
+  background: #fff3cd; border: 2px solid #ffc107;
+  border-radius: 10px; padding: 12px 16px;
+}
+.indicators h3 { color: #856404; font-size: 12px; margin-bottom: 6px; }
+.indicators ul  { color: #533f03; font-size: 11px; padding-left: 16px; line-height: 1.9; }
+
+/* ─── HEADER ─── */
+.site-header {
+  background: var(--ts-blue);
+  padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 58px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+.logo-wrap { display:flex; align-items:center; gap: 10px; }
+.logo-icon { width:36px; height:36px; border-radius:8px; background:#fff; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.logo-text { color:#fff; font-size:18px; font-weight:800; letter-spacing:-0.3px; }
+.logo-text span { color:#ffcc02; }
+.header-cart { color:#fff; font-size:22px; cursor:pointer; position:relative; }
+.cart-badge { position:absolute; top:-6px; right:-6px; background:var(--ts-orange); color:#fff; border-radius:50%; width:16px; height:16px; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+
+/* ─── TICKER ─── */
+.ticker { background:var(--ts-orange); color:#fff; font-size:12px; font-weight:600; padding:7px 0; overflow:hidden; white-space:nowrap; }
+.ticker-inner { display:inline-block; animation: scroll 20s linear infinite; }
+@keyframes scroll { 0%{transform:translateX(100vw)} 100%{transform:translateX(-100%)} }
+
+/* ─── HERO ─── */
+.hero { max-width:700px; margin:20px auto 0; padding:0 14px; }
+
+/* ─── REFERRAL HERO BOX ─── */
+.referral-hero {
+  background: linear-gradient(135deg, #0d47a1 0%, #1565c0 50%, #1976d2 100%);
+  border-radius: 16px; padding: 30px 24px;
+  color: #fff; text-align: center;
+  box-shadow: 0 8px 32px rgba(13,71,161,.35);
+  margin-bottom: 16px; position: relative; overflow: hidden;
+}
+.referral-hero::before {
+  content:''; position:absolute; top:-50px; left:-50px;
+  width:200px; height:200px; border-radius:50%;
+  background:rgba(255,255,255,.05);
+}
+.referral-hero::after {
+  content:''; position:absolute; bottom:-40px; right:-40px;
+  width:160px; height:160px; border-radius:50%;
+  background:rgba(255,255,255,.05);
+}
+.hero-emoji { font-size:40px; margin-bottom:10px; animation: bounce .9s ease infinite alternate; }
+@keyframes bounce { from{transform:translateY(0)} to{transform:translateY(-8px)} }
+.hero-title  { font-size:22px; font-weight:800; line-height:1.3; margin-bottom:8px; }
+.hero-sub    { font-size:14px; color:rgba(255,255,255,.88); line-height:1.6; }
+.hero-badge  {
+  display:inline-block; background:#ffcc02; color:#0d47a1;
+  font-size:13px; font-weight:800; border-radius:20px;
+  padding:6px 20px; margin:14px 0 4px;
+}
+
+/* ─── HOW IT WORKS ─── */
+.how-box {
+  background:#fff; border-radius:14px; padding:20px;
+  margin-bottom:14px; box-shadow:0 2px 10px rgba(0,0,0,.07);
+}
+.how-box h3 { font-size:15px; font-weight:700; color:#1a1a1a; margin-bottom:16px; text-align:center; }
+.steps { display:flex; flex-direction:column; gap:14px; }
+.step-item { display:flex; align-items:flex-start; gap:14px; }
+.step-num {
+  width:36px; height:36px; border-radius:50%;
+  background: var(--ts-blue); color:#fff;
+  font-size:16px; font-weight:800;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.step-text h4 { font-size:14px; font-weight:700; color:#1a1a1a; margin-bottom:2px; }
+.step-text p  { font-size:12px; color:#666; line-height:1.5; }
+
+/* ─── PRIZE CARDS ─── */
+.prize-row {
+  display:flex; gap:12px; margin-bottom:14px;
+}
+.prize-card {
+  flex:1; background:#fff; border-radius:14px;
+  padding:18px 14px; text-align:center;
+  box-shadow:0 2px 10px rgba(0,0,0,.07);
+  border-top:4px solid var(--ts-blue);
+}
+.prize-card.you   { border-top-color: var(--ts-blue); }
+.prize-card.friend{ border-top-color: var(--ts-green); }
+.prize-card .p-icon { font-size:36px; margin-bottom:8px; }
+.prize-card .p-who  { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#999; margin-bottom:6px; }
+.prize-card.you    .p-who { color:var(--ts-blue); }
+.prize-card.friend .p-who { color:var(--ts-green); }
+.prize-card .p-name { font-size:13px; font-weight:700; color:#1a1a1a; margin-bottom:6px; line-height:1.4; }
+.prize-card .p-price-row { display:flex; align-items:center; justify-content:center; gap:8px; }
+.prize-card .old  { font-size:12px; color:#999; text-decoration:line-through; }
+.prize-card .new  { font-size:20px; font-weight:800; color:var(--ts-green); }
+
+
+.ref-link-box {
+  display:flex; gap:8px; margin-bottom:16px;
+}
+.ref-link-input {
+  flex:1; padding:11px 14px;
+  border:1.5px solid #ddd; border-radius:8px;
+  font-size:13px; color:#555; background:#f9f9f9;
+  outline:none; font-family:monospace;
+}
+.btn-copy {
+  background:var(--ts-blue); color:#fff; border:none;
+  border-radius:8px; padding:11px 16px;
+  font-size:13px; font-weight:700; cursor:pointer;
+  white-space:nowrap; font-family:inherit;
+  transition:background .15s;
+}
+.btn-copy:active { background:#0a3880; }
+.btn-copy.copied { background:var(--ts-green); }
+
+/* ─── SHARE SECTION ─── */
+.share-box {
+  background: #fff;
+  border-radius: 18px;
+  padding: 24px 22px;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 22px rgba(0,0,0,.08);
+  border: 1px solid #f0f0f0;
+}
+
+.share-box h3 {
+  font-size: 17px;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.share-box p {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+
+/* LINK BOX */
+.ref-link-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.ref-link-input {
+  flex: 1;
+  padding: 13px 14px;
+  border: 1.5px solid #e2e2e2;
+  border-radius: 12px;
+  font-size: 13px;
+  color: #444;
+  background: #fafafa;
+  outline: none;
+  font-family: monospace;
+}
+
+.ref-link-input:focus {
+  border-color: #1877f2;
+  background: #fff;
+}
+
+.btn-copy {
+  background: linear-gradient(135deg,#1877f2,#0d5ed7);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 13px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: .2s;
+}
+
+.btn-copy:hover {
+  transform: translateY(-1px);
+}
+
+.btn-copy:active {
+  transform: scale(.96);
+}
+
+.btn-copy.copied {
+  background: linear-gradient(135deg,#20bf55,#16a34a);
+}
+
+/* SHARE BUTTONS */
+.share-btns {
+  display: flex;
+  gap: 12px;
+}
+
+.share-btn {
+  flex: 1;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  color: #fff;
+  transition: .2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+
+.share-btn:hover {
+  transform: translateY(-2px);
+}
+
+.share-btn:active {
+  transform: scale(.97);
+}
+
+/* INSTAGRAM */
+.share-btn.instagram {
+  background: linear-gradient(
+    135deg,
+    #f58529,
+    #dd2a7b,
+    #8134af,
+    #515bd4
+  );
+}
+
+/* FACEBOOK */
+.share-btn.facebook {
+  background: linear-gradient(
+    135deg,
+    #1877f2,
+    #0d5ed7
+  );
+}
+
+.share-btn span {
+  font-size: 16px;
+}
+/* ─── TIMER ─── */
+.timer-box {
+  background:#fff3e0; border:1.5px solid #ffcc02;
+  border-radius:12px; padding:14px 20px;
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:14px;
+}
+.timer-label { font-size:13px; font-weight:600; color:#bf360c; }
+.timer-digits { display:flex; gap:8px; }
+.timer-unit   { text-align:center; }
+.timer-num {
+  background:#bf360c; color:#fff;
+  font-size:22px; font-weight:800;
+  border-radius:8px; padding:4px 10px;
+  min-width:44px; display:block;
+  font-variant-numeric:tabular-nums;
+}
+.timer-lbl { font-size:10px; color:#bf360c; margin-top:2px; }
+
+/* ─── DELIVERY ─── */
+.delivery-box {
+  background:#e8f5e9; border-radius:12px; padding:14px 18px;
+  display:flex; align-items:flex-start; gap:12px;
+  margin-bottom:14px; border:1px solid #a5d6a7;
+}
+.delivery-icon { font-size:28px; flex-shrink:0; }
+.delivery-text h4 { font-size:14px; font-weight:700; color:var(--ts-green); }
+.delivery-text p  { font-size:12px; color:#388e3c; line-height:1.5; margin-top:2px; }
+
+/* ─── CTA ─── */
+.btn-claim {
+  width:100%;
+  background:linear-gradient(90deg, #2e7d32, #388e3c);
+  color:#fff; border:none; border-radius:12px;
+  padding:18px; font-size:17px; font-weight:800;
+  cursor:pointer; font-family:inherit;
+  margin-bottom:10px;
+  box-shadow:0 4px 16px rgba(46,125,50,.35);
+  transition:opacity .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-claim:active { opacity:.85; }
+.btn-claim .btn-sub { font-size:11px; font-weight:500; opacity:.85; display:block; margin-top:2px; }
+
+.trust-row {
+  display:flex; justify-content:center; gap:20px;
+  font-size:11px; color:#666; margin-top:8px; flex-wrap:wrap;
+}
+
+/* ─── RECENT ─── */
+.recent-buyers {
+  background:#fff; border-radius:12px; padding:16px 18px;
+  margin:14px 0; box-shadow:0 1px 6px rgba(0,0,0,.07);
+}
+.recent-buyers h4 { font-size:13px; font-weight:700; color:#333; margin-bottom:10px; }
+.buyer-item {
+  display:flex; align-items:center; gap:10px;
+  padding:7px 0; border-bottom:1px solid #f5f5f5;
+}
+.buyer-item:last-child { border-bottom:none; }
+.buyer-avatar {
+  width:32px; height:32px; border-radius:50%;
+  background:#e3f2fd; color:var(--ts-blue);
+  font-size:13px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.buyer-name   { font-size:12px; font-weight:600; color:#333; }
+.buyer-time   { font-size:11px; color:#999; }
+.buyer-action { margin-left:auto; font-size:11px; color:var(--ts-green); font-weight:600; }
+
+/* ─── FOOTER ─── */
+.site-footer {
+  background:#1a1a2e; color:#aaa;
+  font-size:11px; text-align:center;
+  padding:16px; margin-top:24px;
+}
+
+@media (max-width:400px) {
+  .prize-row { flex-direction:column; }
+  .hero-title { font-size:18px; }
+}
+</style>
+</head>
+<body>
+
+<!-- WARNING -->
+<div class="warning-banner">
+  ⚠️ სასწავლო/სადემონსტრაციო ფიშინგის სიმულაცია — საბაკალავრო კვლევა. მონაცემები არ იგზავნება.
+</div>
+
+<div class="indicators">
+  <h3>🔍 ფიშინგის ინდიკატორები (Referral Scam):</h3>
+  <ul>
+    <li><strong>Referral Phishing:</strong> "გაუზიარე მეგობარს" — ორივე მხარე პირად მონაცემებს ბოძებს, scam ვირუსულად ვრცელდება</li>
+    <li><strong>Fake Brand:</strong> ცნობილი ბრენდის სტილი → მომხმარებელი ენდობა → კარტის ინფო შეჰყავს "5 ₾" გადახდისთვის</li>
+    <li><strong>Share Buttons:</strong> WhatsApp/Facebook/SMS — თითოეული გაზიარება ახალ მსხვერპლს მოიყვანს</li>
+    <li><strong>Urgency:</strong> countdown timer — ნაჩქარევი გადაწყვეტილება, ნაკლები სიფხიზლე</li>
+    <li><strong>Fake Social Proof:</strong> "ბოლო გამზიარებლები" — ყველა fake, script-ით გენერირებული</li>
+  </ul>
+</div>
+
+<!-- HEADER -->
+<div class="site-header">
+  <div class="logo-wrap">
+    <div class="logo-icon">🛒</div>
+    <div class="logo-text">Tech<span>Shop</span></div>
+  </div>
+  <div class="header-cart">🛒<span class="cart-badge">2</span></div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <span class="ticker-inner">
+    🎁 გაუზიარე მეგობარს და ორივე მიიღებთ iPhone დამტენს 5 ₾-ად · 📦 უფასო მიტანა თბილისში ·
+    ⚡ 300+ კომპლექტი გავიდა კვირაში · 🔥 შეთავაზება შეზღუდულია! &nbsp;&nbsp;&nbsp;
+    🎁 გაუზიარე მეგობარს და ორივე მიიღებთ iPhone დამტენს 5 ₾-ად · 📦 უფასო მიტანა თბილისში
+  </span>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+
+  <!-- HERO BOX -->
+  <div class="referral-hero">
+    <div class="hero-emoji">🎁</div>
+    <div class="hero-title">გაუზიარე მეგობარს —<br>ორივე გამარჯვებული!</div>
+    <div class="hero-badge">📦 შენ + მეგობარი = 2x საჩუქარი</div>
+    <div class="hero-sub">
+      გაუგზავნე საშეთავაზებო ბმული მეგობარს. ის შეუკვეთავს →
+      ორივე მიიღებთ <strong>MagSafe iPhone დამტენს მხოლოდ 5 ₾-ად</strong>,
+      მიტანა თბილისში — უფასო.
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="how-box">
+    <h3>📋 როგორ მუშაობს?</h3>
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <h4>დააკოპირე შენი ბმული</h4>
+          <p>ქვემოთ გენერირდება შენი პირადი referral ბმული — ის შენს შეძენასთანაა დაკავშირებული.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <h4>გაუგზავნე მეგობარს</h4>
+          <p>Facebook-ით ან Instagram-ით — სულ რამდენიმე წამი სჭირდება.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <h4>თუ შეუკვეთავ → ორივე მიიღებთ</h4>
+          <p>თუ შეუკვეთავ მეგობარიც მიირებს შანს 5 ₾-ად შეიძინოს იგივე ნივთი.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIZE CARDS 
+  <div class="prize-row">
+    <div class="prize-card you">
+      <div class="p-icon">😊</div>
+      <div class="p-who">შენ მიიღებ</div>
+      <div class="p-name">MagSafe iPhone დამტენი 15W</div>
+      <div class="p-price-row">
+        <span class="old">49 ₾</span>
+        <span class="new">5 ₾</span>
+      </div>
+    </div>
+    <div class="prize-card friend">
+      <div class="p-icon">🤝</div>
+      <div class="p-who">მეგობარი მიიღებს</div>
+      <div class="p-name">MagSafe iPhone დამტენი 15W</div>
+      <div class="p-price-row">
+        <span class="old">49 ₾</span>
+        <span class="new">5 ₾</span>
+      </div>
+    </div>
+  </div>
+-->
+  <!-- SHARE BOX -->
+<div class="share-box">
+  <h3>🔗 შენი პირადი ბმული</h3>
+  <p>გაუგზავნე ეს ბმული მეგობარს. ბმულის გაზიარება = ორივე ღებულობთ შეთავაზებას.</p>
+
+  <div class="ref-link-box">
+    <input class="ref-link-input" type="text" id="refLink"
+      value="techshop-referral-demo2.html/ref?u=TS-28471" readonly>
+
+    <button class="btn-copy" id="copyBtn" onclick="copyLink()">
+      📋 კოპირება
+    </button>
+  </div>
+
+  <div class="share-btns">
+
+    <!-- Instagram -->
+    <button class="share-btn instagram" 
+    onclick="window.location.href='instagram-phishing-demo.html'">
+      <span>📸</span> Instagram
+    </button>
+
+    <!-- Facebook -->
+    <button class="share-btn facebook"
+      onclick="window.location.href='facebook-phishing-demo.html'">
+      <span>📘</span> Facebook
+    </button>
+
+  </div>
+</div>
+
+
+
+  <!-- TIMER -->
+  <div class="timer-box">
+    <div class="timer-label">⏱ შეთავაზება იწურება:</div>
+    <div class="timer-digits">
+      <div class="timer-unit">
+        <span class="timer-num" id="t-hr">02</span>
+        <div class="timer-lbl">სთ</div>
+      </div>
+      <div class="timer-unit" style="display:flex;align-items:center;padding-bottom:16px;color:#bf360c;font-weight:900">:</div>
+      <div class="timer-unit">
+        <span class="timer-num" id="t-min">47</span>
+        <div class="timer-lbl">წთ</div>
+      </div>
+      <div class="timer-unit" style="display:flex;align-items:center;padding-bottom:16px;color:#bf360c;font-weight:900">:</div>
+      <div class="timer-unit">
+        <span class="timer-num" id="t-sec">59</span>
+        <div class="timer-lbl">წმ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELIVERY -->
+  <div class="delivery-box">
+    <div class="delivery-icon">🚚</div>
+    <div class="delivery-text">
+      <h4>უფასო მიტანა — თბილისის მაშტაბით</h4>
+      <p>შეკვეთა დღეს → მიტანა ხვალ 12:00-დან 20:00 სთ-მდე.<br>კურიერი დაგიკავშირდებათ ნომერზე.</p>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <button class="btn-claim" onclick="window.location.href='techshop-checkout-new.html'">
+    🎁 შეკვეთა ახლავე — 5 ₾
+    <span class="btn-sub">ბარათით გადახდა · მიტანა უფასოდ</span>
+  </button>
+
+  <div class="trust-row">
+    <span>🔒 უსაფრთხო გადახდა</span>
+    <span>✅ 4.9★ შეფასება</span>
+    <span>🇬🇪 ქართული მაღაზია</span>
+  </div>
+
+  <!-- RECENT SHARERS -->
+  <div class="recent-buyers">
+    <h4>🤝 ბოლოს გაუზიარეს:</h4>
+    <div class="buyer-item">
+      <div class="buyer-avatar">მ</div>
+      <div>
+        <div class="buyer-name">მარიამ G.</div>
+        <div class="buyer-time">6 წუთის წინ · გლდანი</div>
+      </div>
+      <div class="buyer-action">2 მეგობარს გაუზიარა ✓</div>
+    </div>
+    <div class="buyer-item">
+      <div class="buyer-avatar">ლ</div>
+      <div>
+        <div class="buyer-name">ლუკა S.</div>
+        <div class="buyer-time">19 წუთის წინ · დიდუბე</div>
+      </div>
+      <div class="buyer-action">შეუკვეთა ✓</div>
+    </div>
+    <div class="buyer-item">
+      <div class="buyer-avatar">ს</div>
+      <div>
+        <div class="buyer-name">სალომე K.</div>
+        <div class="buyer-time">31 წუთის წინ · ვაკე</div>
+      </div>
+      <div class="buyer-action">3 მეგობარს გაუზიარა ✓</div>
+    </div>
+    <div class="buyer-item">
+      <div class="buyer-avatar">ი</div>
+      <div>
+        <div class="buyer-name">იოსებ T.</div>
+        <div class="buyer-time">52 წუთის წინ · ისანი</div>
+      </div>
+      <div class="buyer-action">შეუკვეთა ✓</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="site-footer">
+  © 2026 TechShop Georgia · techshop-georgia.click · ყველა უფლება დაცულია
+</div>
+
+<!-- POPUP: ფიშინგის ახსნა 
+<div id="overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:8888;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:#fff;border-radius:14px;padding:28px 24px;max-width:440px;width:100%;text-align:center;">
+    <div style="font-size:48px;margin-bottom:12px;">🎣</div>
+    <h2 style="font-size:18px;margin-bottom:8px;">ფიშინგის სიმულაცია!</h2>
+    <p style="font-size:13px;color:#555;line-height:1.7;margin-bottom:14px;">
+      "5 ₾ გადახდა" → გადახდის გვერდზე ბარათის სრული ინფორმაცია შეჰყავს მსხვერპლს. 
+      Referral მექანიზმი scam-ს ვირუსულად ავრცელებს — ყოველი გაზიარება ახალ სამიზნეს ქმნის.
+    </p>
+    <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:14px;margin-bottom:14px;font-size:12px;color:#856404;text-align:left;">
+      <strong style="display:block;font-size:10px;text-transform:uppercase;margin-bottom:6px;">⚠️ რეალური შეტევის მექანიზმი:</strong>
+      1. მსხვერპლი "5 ₾-ის" გადახდისთვის კარტის ნომერს, CVV-ს, ვადას შეჰყავს<br>
+      2. მონაცემები attacker-ის DB-ში ინახება<br>
+      3. Referral ბმულით მეგობრებიც ჩაბმულნი არიან<br>
+      4. კარტის ინფოთი შეიძლება სრული ბალანსი დაიცალოს
+    </div>
+    <button onclick="document.getElementById('overlay').style.display='none'" 
+      style="background:#c0392b;color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;width:100%;font-family:inherit;">
+      გასაგებია, დახურვა
+    </button>
+  </div>
+</div>
+-->
+
+<script>
+// Timer
+let total = 2*3600 + 47*60 + 59;
+function updateTimer() {
+  if(total <= 0) total = 2*3600 + 47*60 + 59;
+  const h = Math.floor(total/3600);
+  const m = Math.floor((total%3600)/60);
+  const s = total%60;
+  document.getElementById('t-hr').textContent  = String(h).padStart(2,'0');
+  document.getElementById('t-min').textContent = String(m).padStart(2,'0');
+  document.getElementById('t-sec').textContent = String(s).padStart(2,'0');
+  total--;
+}
+updateTimer(); setInterval(updateTimer, 1000);
+
+// Copy link
+function copyLink() {
+  const inp = document.getElementById('refLink');
+  inp.select(); inp.setSelectionRange(0,99999);
+  document.execCommand('copy');
+  const btn = document.getElementById('copyBtn');
+  btn.textContent = '✓ კოპირდა!';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.textContent='📋 კოპირება'; btn.classList.remove('copied'); }, 2000);
+}
+
+const msg = encodeURIComponent('გამარჯობა! TechShop Georgia-ზე iPhone დამტენი მხოლოდ 5₾-ად, მიტანა უფასო! ჩემი ბმულით: https://techshop-referral-demo2.html/ref?u=TS-28471');
+function shareWA()  { showPopup(); }
+function shareFB()  { showPopup(); }
+function shareSMS() { showPopup(); }
+function showPopup(){ document.getElementById('overlay').style.display='flex'; }
+</script>
+</body>
+</html>
