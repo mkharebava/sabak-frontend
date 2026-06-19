@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechShop – შეთავაზება ამოიწურა</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #0d47a1;
+  --orange: #ff6f00;
+  --green: #2e7d32;
+  --bg: #f0f4f8;
+  --red: #c62828;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Noto Sans Georgian','Segoe UI',sans-serif; background:var(--bg); min-height:100vh; }
+
+.warn-bar { background:#c0392b; color:#fff; text-align:center; padding:8px 14px; font-size:11px; font-weight:700; }
+
+.header {
+  background:var(--blue); height:56px;
+  display:flex; align-items:center; gap:10px;
+  padding:0 18px; box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+.logo-icon { width:32px; height:32px; background:#fff; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.logo-text  { color:#fff; font-size:17px; font-weight:800; }
+.logo-text span { color:#ffcc02; }
+
+/* MAIN */
+.main { max-width:520px; margin:32px auto 40px; padding:0 16px; }
+
+/* SORRY CARD */
+.sorry-card {
+  background:#fff; border-radius:16px;
+  box-shadow:0 4px 24px rgba(0,0,0,.10);
+  overflow:hidden; margin-bottom:16px;
+}
+.sorry-top {
+  background:linear-gradient(135deg,#b71c1c,#c62828,#e53935);
+  padding:36px 24px; text-align:center; position:relative; overflow:hidden;
+}
+.sorry-top::before {
+  content:''; position:absolute; top:-40px; right:-40px;
+  width:160px; height:160px; border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+.sorry-emoji { font-size:52px; margin-bottom:12px; animation:shake 1.2s ease infinite; }
+@keyframes shake {
+  0%,100%{transform:rotate(0deg)}
+  20%{transform:rotate(-8deg)}
+  40%{transform:rotate(8deg)}
+  60%{transform:rotate(-5deg)}
+  80%{transform:rotate(5deg)}
+}
+.sorry-title { font-size:22px; font-weight:800; color:#fff; margin-bottom:8px; line-height:1.3; }
+.sorry-sub   { font-size:14px; color:rgba(255,255,255,.88); line-height:1.6; }
+
+.sorry-body { padding:24px 20px; }
+
+/* REASON BOX */
+.reason-box {
+  background:#fff8f8; border:1.5px solid #ffcdd2;
+  border-radius:11px; padding:16px 18px; margin-bottom:18px;
+  display:flex; gap:14px; align-items:flex-start;
+}
+.reason-icon { font-size:28px; flex-shrink:0; }
+.reason-text h4 { font-size:14px; font-weight:700; color:#c62828; margin-bottom:4px; }
+.reason-text p  { font-size:13px; color:#666; line-height:1.6; }
+
+/* STOCK BAR */
+.stock-section { margin-bottom:18px; }
+.stock-label { display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:#555; margin-bottom:7px; }
+.stock-label span { color:var(--red); }
+.stock-bar { height:10px; background:#f5f5f5; border-radius:6px; overflow:hidden; }
+.stock-fill { height:100%; background:linear-gradient(90deg,#ef5350,#c62828); border-radius:6px; width:97%; transition:width 1.5s ease; }
+
+/* WAITLIST */
+.waitlist-box {
+  background:#f5f7fa; border-radius:11px; padding:18px;
+  margin-bottom:18px; border:1px solid #e0e0e0;
+}
+.waitlist-box h4 { font-size:14px; font-weight:700; color:#1a1a1a; margin-bottom:6px; }
+.waitlist-box p  { font-size:12px; color:#777; margin-bottom:14px; line-height:1.5; }
+.waitlist-form { display:flex; gap:9px; }
+.waitlist-input {
+  flex:1; padding:11px 13px;
+  border:1.5px solid #ddd; border-radius:9px;
+  font-size:13px; outline:none; font-family:inherit;
+  transition:border-color .2s;
+}
+.waitlist-input:focus { border-color:var(--orange); }
+.btn-waitlist {
+  background:var(--orange); color:#fff; border:none;
+  border-radius:9px; padding:11px 16px;
+  font-size:13px; font-weight:700; cursor:pointer;
+  font-family:inherit; white-space:nowrap;
+}
+.waitlist-success { display:none; text-align:center; font-size:13px; color:var(--green); font-weight:600; padding:8px 0; }
+
+/* COUNTDOWN to next drop */
+.next-drop {
+  background:linear-gradient(135deg,#0d47a1,#1565c0);
+  border-radius:11px; padding:16px 18px; margin-bottom:18px;
+  color:#fff; text-align:center;
+}
+.next-drop p { font-size:12px; color:rgba(255,255,255,.8); margin-bottom:10px; }
+.next-drop h4 { font-size:14px; font-weight:700; margin-bottom:12px; }
+.drop-timer { display:flex; justify-content:center; gap:12px; }
+.dt-unit { text-align:center; }
+.dt-num {
+  background:rgba(255,255,255,.15); color:#fff;
+  font-size:22px; font-weight:800;
+  border-radius:8px; padding:6px 12px;
+  min-width:48px; display:block;
+  font-variant-numeric:tabular-nums;
+}
+.dt-lbl { font-size:10px; color:rgba(255,255,255,.7); margin-top:4px; }
+
+/* ALTERNATIVES */
+.alt-title { font-size:14px; font-weight:800; color:#1a1a1a; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+.alt-grid  { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px; }
+.alt-card  {
+  background:#fff; border-radius:11px; overflow:hidden;
+  border:1px solid #eee; cursor:pointer;
+  transition:box-shadow .15s;
+}
+.alt-card:hover { box-shadow:0 4px 14px rgba(0,0,0,.1); }
+.alt-img { height:90px; background:linear-gradient(135deg,#e3f2fd,#bbdefb); display:flex; align-items:center; justify-content:center; font-size:38px; }
+.alt-body { padding:10px 11px; }
+.alt-name { font-size:12px; font-weight:700; color:#1a1a1a; margin-bottom:5px; line-height:1.4; }
+.alt-price { font-size:14px; font-weight:800; color:var(--green); }
+.alt-old   { font-size:11px; color:#aaa; text-decoration:line-through; margin-right:4px; }
+
+/* SHARE STRIP */
+.share-strip {
+  background:linear-gradient(90deg,#2e7d32,#388e3c);
+  border-radius:11px; padding:14px 16px;
+  display:flex; align-items:center; gap:12px; cursor:pointer;
+  margin-bottom:6px;
+}
+.share-strip .st { color:#fff; flex:1; }
+.share-strip .st h4 { font-size:13px; font-weight:700; margin-bottom:2px; }
+.share-strip .st p  { font-size:11px; color:rgba(255,255,255,.85); }
+.share-strip .sa { color:#fff; font-size:18px; }
+
+/* indicators */
+.indicators { background:#fff3cd; border:2px solid #ffc107; border-radius:10px; padding:12px 16px; margin-bottom:16px; }
+.indicators h3 { color:#856404; font-size:12px; margin-bottom:6px; }
+.indicators ul  { color:#533f03; font-size:11px; padding-left:16px; line-height:1.9; }
+
+footer { background:#1a1a2e; color:#888; font-size:11px; text-align:center; padding:14px; margin-top:8px; }
+</style>
+</head>
+<body>
+
+<div class="warn-bar">⚠️ სასწავლო/სადემონსტრაციო ფიშინგის სიმულაცია — საბაკალავრო კვლევა</div>
+
+<div class="header">
+  <div class="logo-icon">🛒</div>
+  <div class="logo-text">Tech<span>Shop</span></div>
+</div>
+
+<div class="main">
+
+  <div class="indicators">
+    <h3>🔍 ფიშინგის ინდიკატორები (Sold-Out გვერდი):</h3>
+    <ul>
+      <li><strong>Waitlist Trap:</strong> "შეატყობინე" ფორმა — ელ-ფოსტა კვლავ იგროვება მომავალი შეტევებისთვის</li>
+      <li><strong>FOMO (Fear of Missing Out):</strong> "მარაგი ამოიწურა", countdown, "97% გაყიდული" — ემოციური მანიპულაცია</li>
+      <li><strong>Redirect to Alternatives:</strong> მსხვერპლი სხვა "შეთავაზებებზე" გადაჰყავთ — კარტის ინფო კვლავ სჭირდება</li>
+      <li><strong>Referral Loop:</strong> "გაუზიარე" — ახალი მსხვერპლების მოზიდვა გრძელდება</li>
+    </ul>
+  </div>
+
+  <!-- SORRY CARD -->
+  <div class="sorry-card">
+    <div class="sorry-top">
+      <div class="sorry-emoji">😔</div>
+      <div class="sorry-title">სამწუხაროდ, ეს<br>შეთავაზება ამოიწურა</div>
+      <div class="sorry-sub">თქვენ ვერ მოასწარით —<br> თუმცა შენ მეგობარს კვლავ შეძლია,<br>გაუგზავნე მას ის მაინც მიიღებს ამ შანსს!</div>
+    </div>
+
+    <div class="sorry-body">
+
+      <!-- REASON -->
+      <div class="reason-box">
+        <div class="reason-icon">📦</div>
+        <div class="reason-text">
+          <h4>მარაგი ამოიწურა</h4>
+          <p>MagSafe iPhone დამტენის 5 ₾-იანი შეთავაზება — 200 კომპლექტიდან ბოლო გაიყიდა რამდენიმე წუთის წინ. მოთხოვნა მოლოდინს გადააჭარბა.</p>
+        </div>
+      </div>
+
+      <!-- STOCK BAR -->
+      <div class="stock-section">
+        <div class="stock-label">
+          <span>მარაგის სტატუსი</span>
+          <span>200/200 — ამოწურულია</span>
+        </div>
+        <div class="stock-bar"><div class="stock-fill" id="stock-fill"></div></div>
+      </div>
+
+      <!-- NEXT DROP COUNTDOWN -->
+      <div class="next-drop">
+        <p>⏰ შემდეგი პარტია ხელმისაწვდომი იქნება:</p>
+        <h4>დარეგისტრირდი და პირველი გაიგებ!</h4>
+        <div class="drop-timer">
+          <div class="dt-unit">
+            <span class="dt-num" id="d-hr">23</span>
+            <div class="dt-lbl">სთ</div>
+          </div>
+          <div class="dt-unit" style="display:flex;align-items:center;padding-bottom:18px;color:rgba(255,255,255,.6);font-weight:900">:</div>
+          <div class="dt-unit">
+            <span class="dt-num" id="d-min">47</span>
+            <div class="dt-lbl">წთ</div>
+          </div>
+          <div class="dt-unit" style="display:flex;align-items:center;padding-bottom:18px;color:rgba(255,255,255,.6);font-weight:900">:</div>
+          <div class="dt-unit">
+            <span class="dt-num" id="d-sec">12</span>
+            <div class="dt-lbl">წმ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WAITLIST -->
+      <div class="waitlist-box">
+        <h4>🔔 შეატყობინე, როცა მარაგი განახლდება</h4>
+        <p>შეიყვანე ელ-ფოსტა — მარაგის განახლებისთანავე პირველი გაიგებ და 10 წუთი გექნება შეკვეთისთვის.</p>
+        <div class="waitlist-form" id="wl-form">
+          <input class="waitlist-input" type="email" id="wl-email" placeholder="შენი ელ-ფოსტა" inputmode="email">
+          <button class="btn-waitlist" onclick="joinWaitlist()">შეატყობინე</button>
+        </div>
+        <div class="waitlist-success" id="wl-success">
+          ✅ დარეგისტრირდი! შეგატყობინებთ მარაგის განახლებისთანავე.
+        </div>
+      </div>
+
+      <!-- ALTERNATIVES
+      <div class="alt-title">🛍 სხვა შეთავაზებები</div>
+      <div class="alt-grid">
+        <div class="alt-card" onclick="window.location.href='techshop-checkout.html'">
+          <div class="alt-img">🔌</div>
+          <div class="alt-body">
+            <div class="alt-name">USB-C 65W GaN დამტენი</div>
+            <div><span class="alt-old">89 ₾</span><span class="alt-price">39 ₾</span></div>
+          </div>
+        </div>
+        <div class="alt-card" onclick="window.location.href='techshop-checkout.html'">
+          <div class="alt-img">📱</div>
+          <div class="alt-body">
+            <div class="alt-name">iPhone 17 Pro 256GB</div>
+            <div><span class="alt-old">3 899 ₾</span><span class="alt-price">3 299 ₾</span></div>
+          </div>
+        </div>
+        <div class="alt-card" onclick="window.location.href='techshop-checkout.html'">
+          <div class="alt-img">🎧</div>
+          <div class="alt-body">
+            <div class="alt-name">AirPods Pro 2nd Gen</div>
+            <div><span class="alt-old">599 ₾</span><span class="alt-price">449 ₾</span></div>
+          </div>
+        </div>
+        <div class="alt-card" onclick="window.location.href='techshop-checkout.html'">
+          <div class="alt-img">⌚</div>
+          <div class="alt-body">
+            <div class="alt-name">Apple Watch Series 10</div>
+            <div><span class="alt-old">1 299 ₾</span><span class="alt-price">999 ₾</span></div>
+          </div>
+        </div>
+      </div>
+ -->
+      <!-- SHARE STRIP -->
+      <div class="share-strip" onclick="window.location.href='techshop-referral-demo2.html'">
+        <span style="font-size:28px">🎁</span>
+        <div class="st">
+          <h4>გაუზიარე მეგობარს — ის მიიღებს!</h4>
+          <p>შეიძლება შენმა მეგობარმა მოასწროს · MagSafe 5 ₾</p>
+        </div>
+        <div class="sa">›</div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<footer>© 2024 TechShop Georgia · techshop-georgia.click</footer>
+
+<script>
+// stock bar animation on load
+setTimeout(() => {
+  document.getElementById('stock-fill').style.width = '97%';
+}, 300);
+
+// countdown to "next drop"
+let t = 23*3600 + 47*60 + 12;
+function tick() {
+  if (t <= 0) t = 23*3600 + 59*60 + 59;
+  const h = Math.floor(t/3600);
+  const m = Math.floor((t%3600)/60);
+  const s = t%60;
+  document.getElementById('d-hr').textContent  = String(h).padStart(2,'0');
+  document.getElementById('d-min').textContent = String(m).padStart(2,'0');
+  document.getElementById('d-sec').textContent = String(s).padStart(2,'0');
+  t--;
+}
+tick(); setInterval(tick, 1000);
+
+// waitlist
+function joinWaitlist() {
+  const el = document.getElementById('wl-email');
+  if (!el.value || !el.value.includes('@')) {
+    el.style.borderColor = '#e53935'; return;
+  }
+  document.getElementById('wl-form').style.display    = 'none';
+  document.getElementById('wl-success').style.display = 'block';
+}
+</script>
+</body>
+</html>

