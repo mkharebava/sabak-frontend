@@ -8,8 +8,8 @@
 
 ## Live Demo
 
-- **პლატფორმა:** https://techop.vercel.app
-- **Admin Panel:** https://techop.vercel.app/admin
+- **პლატფორმა:** https://techshopge.vercel.app
+- **Admin Panel:** https://techshopge.vercel.app/admin.html
 
 ## გვერდები
 
